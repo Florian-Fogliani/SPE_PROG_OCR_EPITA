@@ -6,8 +6,7 @@ SDL_Surface* Init_Surface(char* path)
 	SDL_Surface* res = IMG_Load(path);
 	if (!res)
 	{
-		errx("Init_Surface : ERROR");
-		return EXIT_FAILURE;
+		errx(EXIT_FAILURE,"Init_Surface : ERROR");
 	}
 	return res;
 }
@@ -17,6 +16,7 @@ char* Init_Mat()
 	//PARAM : const diagonal length
 	//calcul diagonale
 	//return mat
+	return;
 }
 
 void Fill_Mat()
@@ -24,13 +24,14 @@ void Fill_Mat()
 	//ITERATION
 	//DETECT MAX
 	//
+	return;
 }
 
-const long Calculate_Diagonal(SDL_Surface* img)
+long Calculate_Diagonal(SDL_Surface* img)
 {
-
+	return;
 }
-
+//
 //MAIN
 //Init surface
 //Define const diagonal length
