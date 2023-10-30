@@ -31,7 +31,11 @@ void Fill_Mat()
 
 double Calculate_Diagonal(SDL_Surface* img)
 {
-	return sqrt(pow(img->w,2)+pow(img->h,2));
+	double p1 = pow((double)img->w,2);
+	double p2 = pow((double)img->h,2);
+	double res = sqrt(p1+p2);
+	printf("%f \n",res);
+	return res;
 }
 //
 //MAIN
