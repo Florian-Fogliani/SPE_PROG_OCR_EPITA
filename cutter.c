@@ -1,5 +1,6 @@
 #include "hough.h"
 #include "stdlib.h"
+#include <err.h>
 
 SDL_Surface* load_image(const char* path)
 {
