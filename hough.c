@@ -15,7 +15,7 @@ void Free_Mat(char* mat)
 	free(mat);
 }
 
-void Fill_Mat(SDL_Surface* img, char* mat)
+void Fill_Mat(SDL_Surface* img, char* mat, const int diag_size)
 {
 	Uint32* pixels = img->pixels;
 	SDL_PixelFormat * format = img->format;
@@ -29,8 +29,8 @@ void Fill_Mat(SDL_Surface* img, char* mat)
 			{
 				for (int theta = 0; theta<=180; theta++)
 				{
-					int p = (int)h*cos(theta) + w*sin(theta);
-					mat[theta*180+p] += 1;
+					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180));
+					mat[theta*(diag_size*2)+p] += 1;
 				}
 			}
 		}
