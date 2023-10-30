@@ -28,8 +28,16 @@ int main(int argc, char** argv)
     if (surface == NULL)
     {
 	    errx(EXIT_FAILURE, "%s",SDL_GetError());
-    
     }
-    double diag_size = Calculate_Diagonal(surface);
-    printf("%f \n", diag_size);
+
+    const int diag_size = (int)Calculate_Diagonal(surface);
+    char* mat = Init_Mat(diag_size);
+    Fill_Mat(surface,mat);
+    for (int i=0; i<180; i++)
+    {
+	    for (int y=0; y<diag_size*2; y++)
+	    {
+		    printf("%c",mat[i*180+y]);
+	    }
+    }
 }

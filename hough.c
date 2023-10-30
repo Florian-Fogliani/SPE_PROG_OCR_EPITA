@@ -3,46 +3,51 @@
 #include <SDL2/SDL_image.h>
 #include <err.h>
 #include <math.h>
-SDL_Surface* Init_Surface(char* path)
+
+char* Init_Mat(const int R)
 {
-	SDL_Surface* res = IMG_Load(path);
-	if (!res)
-	{
-		errx(EXIT_FAILURE,"Init_Surface : ERROR");
-	}
+	char* res = calloc(180*(R*2),sizeof(char));
 	return res;
 }
 
-void Init_Mat()
+void Free_Mat(char* mat)
 {
-	//PARAM : const diagonal length
-	//calcul diagonale
-	//return mat
-	return ;
+	free(mat);
 }
 
-void Fill_Mat()
+void Fill_Mat(SDL_Surface* img, char* mat)
 {
-	//ITERATION
-	//DETECT MAX
-	//
-	return;
+	Uint32* pixels = img->pixels;
+	SDL_PixelFormat * format = img->format;
+	Uint8 r,g,b;
+	for (int h=0; h<img->h; h++)
+	{
+		for (int w=0; w<img->w; w++)
+		{
+			SDL_GetRGB(pixels[(h* img->w)+w],format,&r,&g,&b);
+			if (r != 0 && g != 0 && b !=0)
+			{
+				for (int theta = 0; theta<=180; theta++)
+				{
+					int p = (int)h*cos(theta) + w*sin(theta);
+					mat[theta*180+p] += 1;
+				}
+			}
+		}
+	}
 }
+
+void Detect_Max() {}
 
 double Calculate_Diagonal(SDL_Surface* img)
 {
 	double p1 = pow((double)img->w,2);
 	double p2 = pow((double)img->h,2);
 	double res = sqrt(p1+p2);
-	printf("%f \n",res);
 	return res;
 }
-//
-//MAIN
-//Init surface
-//Define const diagonal length
-//init mat 
-//fill_mat
+
+
 //detect max -> enregistrement ou ?
 //debug : draw line
 //cutter -> in : enregistrement en pls images
