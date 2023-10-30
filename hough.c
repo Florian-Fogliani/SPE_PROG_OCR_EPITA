@@ -1,6 +1,8 @@
 #include "hough.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <err.h>
+#include <math.h>
 SDL_Surface* Init_Surface(char* path)
 {
 	SDL_Surface* res = IMG_Load(path);
@@ -27,9 +29,9 @@ void Fill_Mat()
 	return;
 }
 
-long Calculate_Diagonal(SDL_Surface* img)
+double Calculate_Diagonal(SDL_Surface* img)
 {
-	return;
+	return sqrt(pow(img->w,2)+pow(img->h,2));
 }
 //
 //MAIN

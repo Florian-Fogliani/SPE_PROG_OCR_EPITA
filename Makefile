@@ -1,9 +1,9 @@
 #MakeFile
 
 CC = gcc
-CFLAGS = -Wall -Wextra 'pkg-config --cflags sdl2 SDL2_image'
+CFLAGS = -Wall -Wextra $(shell pkg-config --cflags sdl2 SDL2_image) -lm
 SRC = hough.c cutter.c
-LDLIBS = 'pkg-config --libs sdl2 SDL2_image'
+LDLIBS = $(shell pkg-config --libs sdl2 SDL2_image) -lm
 OBJ = ${SRC:.c=.o}
 EXE = ${SRC:.c=}
 
