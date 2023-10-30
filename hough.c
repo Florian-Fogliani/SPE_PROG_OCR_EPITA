@@ -13,12 +13,12 @@ SDL_Surface* Init_Surface(char* path)
 	return res;
 }
 
-char* Init_Mat()
+void Init_Mat()
 {
 	//PARAM : const diagonal length
 	//calcul diagonale
 	//return mat
-	return;
+	return ;
 }
 
 void Fill_Mat()
