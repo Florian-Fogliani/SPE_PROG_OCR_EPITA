@@ -11,10 +11,13 @@ int main(int argc, char** argv){
 	    SDL_Init(SDL_INIT_VIDEO);
 	    IMG_Init(IMG_INIT_PNG);
 	    SDL_Surface* surf = IMG_Load(argv[1]);
-	    printf("%s",argv[1]);
-	    printf("%f",surf->w);
-	    printf("%f",surf->h);
-	    printf("%f",Calculate_Diagonal(surf));
+	    if (surf == NULL)
+	    {
+		    errx(EXIT_FAILURE, "Erreur de chargement de la surface");
+	    }
+	    printf("%s\n",argv[1]);
+	    printf("%f\n",surf->w);
+	    printf("%f\n",surf->h);
 
     }
 }
