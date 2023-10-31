@@ -4,9 +4,9 @@
 #include <err.h>
 #include <math.h>
 
-char* Init_Mat(const int R)
+int* Init_Mat(const int R)
 {
-	char* res = calloc(180*(R*2),sizeof(char));
+	int* res = calloc(180*(R*2),sizeof(int));
 	return res;
 }
 
@@ -15,7 +15,7 @@ void Free_Mat(char* mat)
 	free(mat);
 }
 
-void Fill_Mat(SDL_Surface* img, char* mat, const int diag_size)
+void Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 {
 	Uint32* pixels = img->pixels;
 	SDL_PixelFormat * format = img->format;
@@ -47,16 +47,16 @@ double Calculate_Diagonal(SDL_Surface* img)
 	return res;
 }
 
-void Debug(SDL_Surface* img,char* mat,const int diag_size)
+void Debug(int* mat,const int diag_size)
 {
 	SDL_Window* window = SDL_CreateWindow("Debug",0,0,200,200,SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,255,255,255,255);
-	for (int p=0; p<diag_size*2; p++)
+	for (int p=0; p<=diag_size*2; p++)
 	{
-		for (int t=0; t<180; t++)
+		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*(180)+t] > 90)
+			if (mat[p*(180)+t] > 150)
 			{
 				drawLine(renderer,p,t);
 			}
@@ -79,7 +79,7 @@ void drawLine(SDL_Renderer* renderer, int rho, int theta)
 	double sinT = sin(theta*M_PI/180);
 	int x1 = rho * cosT - 1000 * sinT;
 	int y1 = rho* sinT + 1000 * cosT;
-	int x2 = rho * cosT - 1000 * sinT;
+	int x2 = rho * cosT + 1000 * sinT;
 	int y2 = rho * sinT - 1000 * cosT;
 	SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
 }
