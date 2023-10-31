@@ -29,8 +29,9 @@ void Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 			{
 				for (int theta = 0; theta<=180; theta++)
 				{
-					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180));
-					mat[p*(180)+theta] += 1;
+					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180))+diag_size;
+					if (p >= 0 && p<diag_size*2){
+					mat[p*(180)+theta] += 1;}
 				}	
 			}
 		}
@@ -56,7 +57,7 @@ void Debug(int* mat,const int diag_size)
 	{
 		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*(180)+t] > 150)
+			if (mat[p*(180)+t] > 130)
 			{
 				drawLine(renderer,p,t);
 			}
@@ -77,9 +78,9 @@ void drawLine(SDL_Renderer* renderer, int rho, int theta)
 {
 	double cosT = cos(theta*M_PI/180);
 	double sinT = sin(theta*M_PI/180);
-	int x1 = rho * cosT - 1000 * sinT;
+	int x1 = rho * cosT + 1000 * sinT;
 	int y1 = rho* sinT + 1000 * cosT;
-	int x2 = rho * cosT + 1000 * sinT;
+	int x2 = rho * cosT - 1000 * sinT;
 	int y2 = rho * sinT - 1000 * cosT;
 	SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
 }
