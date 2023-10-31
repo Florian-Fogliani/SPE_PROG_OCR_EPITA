@@ -30,8 +30,8 @@ void Fill_Mat(SDL_Surface* img, char* mat, const int diag_size)
 				for (int theta = 0; theta<=180; theta++)
 				{
 					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180));
-					mat[theta*(diag_size*2)+p] += 1;
-				}
+					mat[p*(180)+theta] += 1;
+				}	
 			}
 		}
 	}
@@ -47,6 +47,42 @@ double Calculate_Diagonal(SDL_Surface* img)
 	return res;
 }
 
+void Debug(SDL_Surface* img,char* mat,const int diag_size)
+{
+	SDL_Window* window = SDL_CreateWindow("Debug",0,0,200,200,SDL_WINDOW_SHOWN);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	for (int p=0; p<diag_size*2; p++)
+	{
+		for (int t=0; t<180; t++)
+		{
+			if (mat[p*(180)+t] > 90)
+			{
+				drawLine(renderer,p,t);
+			}
+		}
+	}
+	SDL_RenderPresent(renderer);
+	SDL_Event event;
+	while (1)
+	{
+		SDL_WaitEvent(&event);
+		switch (event.type)
+		{
+			case SDL_QUIT : return;
+		}
+	}
+}
+void drawLine(SDL_Renderer* renderer, int rho, int theta)
+{
+	double cosT = cos(theta*M_PI/180);
+	double sinT = sin(theta*M_PI/180);
+	int x1 = rho * cosT - 1000 * sinT;
+	int y1 = rho* sinT + 1000 * cosT;
+	int x2 = rho * cosT - 1000 * sinT;
+	int y2 = rho * sinT - 1000 * cosT;
+	SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+}
 
 //detect max -> enregistrement ou ?
 //debug : draw line

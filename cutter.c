@@ -33,11 +33,5 @@ int main(int argc, char** argv)
     const int diag_size = (int)Calculate_Diagonal(surface);
     char* mat = Init_Mat(diag_size);
     Fill_Mat(surface,mat,diag_size);
-    for (int i=0; i<180; i++)
-    {
-	    for (int y=0; y<diag_size*2; y++)
-	    {
-		    printf("%c",mat[i*(diag_size*2)+y]);
-	    }
-    }
+   Debug(surface, mat, diag_size);
 }
