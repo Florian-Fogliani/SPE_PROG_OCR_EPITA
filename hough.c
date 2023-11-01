@@ -29,9 +29,10 @@ void Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 			{
 				for (int theta = 0; theta<=180; theta++)
 				{
-					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180))+diag_size;
-					if (p >= 0 && p<diag_size*2){
-					mat[p*(180)+theta] += 1;}
+					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180));
+					if (p >= 0 && p<=diag_size*2 ){
+					mat[p*(180)+theta] += 1;
+					}
 				}	
 			}
 		}
@@ -48,23 +49,26 @@ double Calculate_Diagonal(SDL_Surface* img)
 	return res;
 }
 
-void Debug(int* mat,const int diag_size)
+void Debug(int* mat,const int diag_size,char* img,int w, int h)
 {
 	SDL_Window* window = SDL_CreateWindow("Debug",0,0,200,200,SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
-	SDL_SetRenderDrawColor(renderer,255,255,255,255);
+	SDL_SetRenderDrawColor(renderer,238,130,238,255);
+	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
+	SDL_RenderCopy(renderer,texture,NULL,NULL);
 	for (int p=0; p<=diag_size*2; p++)
 	{
 		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*(180)+t] > 130)
+			if (mat[p*(180)+t] > 120)
 			{
-				drawLine(renderer,p,t);
+				drawLine(renderer,p-diag_size,t);
 			}
 		}
 	}
 	SDL_RenderPresent(renderer);
 	SDL_Event event;
+	SDL_SetWindowSize(window,w,h);
 	while (1)
 	{
 		SDL_WaitEvent(&event);
@@ -76,12 +80,13 @@ void Debug(int* mat,const int diag_size)
 }
 void drawLine(SDL_Renderer* renderer, int rho, int theta)
 {
-	double cosT = cos(theta*M_PI/180);
-	double sinT = sin(theta*M_PI/180);
-	int x1 = rho * cosT + 1000 * sinT;
-	int y1 = rho* sinT + 1000 * cosT;
-	int x2 = rho * cosT - 1000 * sinT;
-	int y2 = rho * sinT - 1000 * cosT;
+	double angleRad = (theta-90)*M_PI / 180;
+	int x0 = rho* cos(angleRad);
+	int y0 = rho*sin(angleRad);
+	int x1 = x0 + 1000 * -sin(angleRad);
+	int y1 = y0 + 1000 * cos(angleRad);
+	int x2 = x0 - 1000 * -sin(theta);
+	int y2 = y0 - 1000 * cos(theta);
 	SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
 }
 
