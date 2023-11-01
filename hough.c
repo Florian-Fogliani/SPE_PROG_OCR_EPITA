@@ -27,12 +27,10 @@ void Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 			SDL_GetRGB(pixels[(h* img->w)+w],format,&r,&g,&b);
 			if (r != 0 && g != 0 && b !=0)
 			{
-				for (int theta = 0; theta<=180; theta++)
+				for (int theta = -90; theta<=90; theta++)
 				{
 					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180));
-					if (p >= 0 && p<=diag_size*2 ){
-					mat[p*(180)+theta] += 1;
-					}
+					mat[(p+diag_size)*(180)+(theta+90)] += 1;
 				}	
 			}
 		}
@@ -51,7 +49,7 @@ double Calculate_Diagonal(SDL_Surface* img)
 
 void Debug(int* mat,const int diag_size,char* img,int w, int h)
 {
-	SDL_Window* window = SDL_CreateWindow("Debug",0,0,200,200,SDL_WINDOW_SHOWN);
+	SDL_Window* window = SDL_CreateWindow("Debug",0,0,w,h,SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
@@ -60,15 +58,14 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h)
 	{
 		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*(180)+t] > 120)
+			if (mat[p*(180)+t] > 400)
 			{
-				drawLine(renderer,p-diag_size,t);
+				drawLine(renderer,p-diag_size,t-90);
 			}
 		}
 	}
 	SDL_RenderPresent(renderer);
 	SDL_Event event;
-	SDL_SetWindowSize(window,w,h);
 	while (1)
 	{
 		SDL_WaitEvent(&event);
@@ -80,7 +77,7 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h)
 }
 void drawLine(SDL_Renderer* renderer, int rho, int theta)
 {
-	double angleRad = (theta-90)*M_PI / 180;
+	double angleRad = theta*M_PI/180;
 	int x0 = rho* cos(angleRad);
 	int y0 = rho*sin(angleRad);
 	int x1 = x0 + 1000 * -sin(angleRad);
