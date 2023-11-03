@@ -11,8 +11,16 @@ int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size);
 void Debug(int* mat, const int diag_size,char* img,int w,int h,int max);
 void drawLine(SDL_Renderer* renderer, int rho, int theta, int width,int height);
 
-struct Point;
-struct Line;
+struct Point
+{
+	int x;
+	int y;
+};
+struct Line
+{
+	int slope;
+	int intercept;
+};
 
 
 

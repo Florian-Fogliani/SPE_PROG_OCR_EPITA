@@ -4,17 +4,6 @@
 #include <err.h>
 #include <math.h>
 
-struct Point
-{
-	int x;
-	int y;
-};
-
-struct Line
-{
-	int slope;
-	int intercept;
-};
 
 int* Init_Mat(const int R)
 {
