@@ -15,11 +15,12 @@ void Free_Mat(char* mat)
 	free(mat);
 }
 
-void Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
+int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 {
 	Uint32* pixels = img->pixels;
 	SDL_PixelFormat * format = img->format;
 	Uint8 r,g,b;
+	int max=0;
 	for (int h=0; h<img->h; h++)
 	{
 		for (int w=0; w<img->w; w++)
@@ -29,12 +30,13 @@ void Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 			{
 				for (int theta = -90; theta<=90; theta++)
 				{
-					int p = (int)(h*cos(theta * M_PI / 180) + w*sin(theta * M_PI/180));
+					int p = (int)(w*cos(theta * M_PI / 180) + h*sin(theta * M_PI/180));
 					mat[(p+diag_size)*(180)+(theta+90)] += 1;
 				}	
 			}
 		}
 	}
+	return max;
 }
 
 void Detect_Max() {}
@@ -58,9 +60,9 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h)
 	{
 		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*(180)+t] > 400)
+			if (mat[p*(180)+t] > 100)
 			{
-				drawLine(renderer,p-diag_size,t-90);
+				drawLine(renderer,p-diag_size,t-90,w);
 			}
 		}
 	}
@@ -75,19 +77,13 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h)
 		}
 	}
 }
-void drawLine(SDL_Renderer* renderer, int rho, int theta)
+void drawLine(SDL_Renderer* renderer, int rho, int theta,int width)
 {
 	double angleRad = theta*M_PI/180;
-	int x0 = rho* cos(angleRad);
-	int y0 = rho*sin(angleRad);
-	int x1 = x0 + 1000 * -sin(angleRad);
-	int y1 = y0 + 1000 * cos(angleRad);
-	int x2 = x0 - 1000 * -sin(theta);
-	int y2 = y0 - 1000 * cos(theta);
-	SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+	int x0 = 0;
+	int y0 = rho / sin(angleRad);
+	int x1 = width-1;
+	int y1 = x1 * -cos(angleRad)/sin(angleRad) + y0;
+	SDL_RenderDrawLine(renderer,x0,y0,x1,y1);
 }
 
-//detect max -> enregistrement ou ?
-//debug : draw line
-//cutter -> in : enregistrement en pls images
-//
