@@ -4,6 +4,18 @@
 #include <err.h>
 #include <math.h>
 
+struct Point
+{
+	int x;
+	int y;
+};
+
+struct Line
+{
+	int slope;
+	int intercept;
+};
+
 int* Init_Mat(const int R)
 {
 	int* res = calloc(180*(R*2),sizeof(int));
@@ -98,17 +110,6 @@ void drawLine(SDL_Renderer* renderer, int rho, int theta,int width,int height)
 }
 
 
-struct Point()
-{
-	int x; 
-	int y;
-};
-
-struct Line()
-{
-	int slope;
-	int intercept;
-}
 
 void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img)
 {
@@ -117,9 +118,9 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
-	for (int i=0; i<size_horizontals, i++)
+	for (int i=0; i<*size_horizontals; i++)
 	{
-		SDL_RenderDrawLine(renderer, 0, horizontals[i]->intercept, w-1, (w-1)*horizontals[i]->slope + horizontals[i]->intercept);
+		SDL_RenderDrawLine(renderer, 0, horizontals[i].intercept, w-1, (w-1)*horizontals[i].slope + horizontals[i].intercept);
 	}
 	SDL_RenderPresent(renderer);
 	SDL_Event event;
@@ -128,7 +129,7 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 		SDL_WaitEvent(&event);
 		switch (event.type)
 		{
-			case SDL_Quit : return;
+			case SDL_QUIT : return;
 		}
 	}
 }
@@ -136,7 +137,7 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, struct Line* verticals,int* size_horizontals, int* size_verticals)
 {
 	int thresold = max* 0.4;
-	int tresold_horizon = 4;
+	int thresold_horizon = 4;
 	for (int p=0; p<diag_size*2; p++)
 	{
 		for (int t=0; t<180; t++)
@@ -145,18 +146,17 @@ void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, 
 			{
 				int real_p = p-diag_size;
 				int real_t = t-90;
-				if (fabs(real_t) <= theresold_horizon) //Horizontals Lines
+				if (abs(real_t) <= thresold_horizon) //Horizontals Lines
 				{
 						size_horizontals++;
-						horizontals = (struct Line*)realloc(horizontals,size_horizontals*sizeof(struct Line));
-						horizontals[size_horizontals - 1].slope = real_p / sin(real_t * M_PI / 180);
-						horizontals[size_horizontals - 1].intercept = -cos(real_t * M_PI / 180)/sin(real_t * M_PI / 180);
+						horizontals = (struct Line*)realloc(horizontals,*(size_horizontals)*sizeof(struct Line));
+						horizontals[*(size_horizontals) - 1].slope = real_p / sin(real_t * M_PI / 180);
+						horizontals[*(size_horizontals) - 1].intercept = -cos(real_t * M_PI / 180)/sin(real_t * M_PI / 180);
 					}
 				}
 				//if (fabs(t-90-CV_PI/2) < ang
 			}
 		}
-	}
 }
 
 void GetIntersec()
