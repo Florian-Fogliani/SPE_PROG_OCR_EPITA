@@ -66,6 +66,7 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h,int max)
 		{
 			if (mat[p*(180)+t] > seuil)
 			{
+				printf("%d %d \n",p-diag_size,t-90);
 				drawLine(renderer,p-diag_size,t-90,w,h);
 			}
 		}
@@ -109,7 +110,10 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
 	for (int i=0; i<(*size_horizontals); i++)
 	{
-		drawLine(renderer,horizontals[i].rho,horizontals[i].theta,w,h);
+		int p = horizontals[i].rho;
+		int t = horizontals[i].theta;
+		printf("%d %d \n", p,t);
+		drawLine(renderer,p,t,w,h);
 
 	}
 	SDL_RenderPresent(renderer);
@@ -140,8 +144,8 @@ void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, 
 				//{
 						*size_horizontals = *size_horizontals + 1;
 						horizontals = (struct Line*)realloc(horizontals,*(size_horizontals)*sizeof(struct Line));
-						horizontals[*(size_horizontals) - 1].rho = real_p;
-						horizontals[*(size_horizontals) - 1].theta = real_t;
+						struct Line to_save = {real_p, real_t};
+						horizontals[*(size_horizontals) - 1] = to_save;
 				//}
 			}
 				//if (fabs(t-90-CV_PI/2) < ang
