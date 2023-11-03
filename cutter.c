@@ -35,9 +35,10 @@ int main(int argc, char** argv)
     int max = Fill_Mat(surface,mat,diag_size);
     struct Line* horizontals = malloc(sizeof(struct Line));
     struct Line* verticals = malloc(sizeof(struct Line));
-    int size_horizontals=0;
-    int size_verticals=0;
+    int size_horizontals=1;
+    int size_verticals=1;
     GetLines(mat,diag_size,max,horizontals,verticals,&size_horizontals,&size_verticals);
-    Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,surface->w,surface->h, argv[1]);
+    //Debug(mat, diag_size,argv[1], surface->w, surface->h, max);
+    Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,surface->w,surface->h, argv[1],diag_size);
    //Debug(mat, diag_size,argv[1],surface->w,surface->h,max);
 }

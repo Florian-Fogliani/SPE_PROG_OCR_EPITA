@@ -100,16 +100,17 @@ void drawLine(SDL_Renderer* renderer, int rho, int theta,int width,int height)
 
 
 
-void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img)
+void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img,const int diag_size)
 {
 	SDL_Window* window = SDL_CreateWindow("Debug GetLines",0,0,w,h,SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
-	for (int i=0; i<*size_horizontals; i++)
+	for (int i=0; i<(*size_horizontals); i++)
 	{
-		SDL_RenderDrawLine(renderer, 0, horizontals[i].intercept, w-1, (w-1)*horizontals[i].slope + horizontals[i].intercept);
+		drawLine(renderer,horizontals[i].rho,horizontals[i].theta,w,h);
+
 	}
 	SDL_RenderPresent(renderer);
 	SDL_Event event;
@@ -125,24 +126,24 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 
 void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, struct Line* verticals,int* size_horizontals, int* size_verticals)
 {
-	int thresold = max* 0.4;
-	int thresold_horizon = 4;
-	for (int p=0; p<diag_size*2; p++)
+	int thresold = max * 0.4;
+	int thresold_horizon = 90;
+	for (int p=0; p<=diag_size*2; p++)
 	{
-		for (int t=0; t<180; t++)
+		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*180+t] > thresold)
+			if (mat[p*(180)+t] > thresold)
 			{
 				int real_p = p-diag_size;
 				int real_t = t-90;
-				if (abs(real_t) <= thresold_horizon) //Horizontals Lines
-				{
-						size_horizontals++;
+				//if (abs(real_t) <= thresold_horizon) //Horizontals Lines
+				//{
+						*size_horizontals = *size_horizontals + 1;
 						horizontals = (struct Line*)realloc(horizontals,*(size_horizontals)*sizeof(struct Line));
-						horizontals[*(size_horizontals) - 1].slope = real_p / sin(real_t * M_PI / 180);
-						horizontals[*(size_horizontals) - 1].intercept = -cos(real_t * M_PI / 180)/sin(real_t * M_PI / 180);
-					}
-				}
+						horizontals[*(size_horizontals) - 1].rho = real_p;
+						horizontals[*(size_horizontals) - 1].theta = real_t;
+				//}
+			}
 				//if (fabs(t-90-CV_PI/2) < ang
 			}
 		}
