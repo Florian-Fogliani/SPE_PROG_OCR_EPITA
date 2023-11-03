@@ -147,7 +147,7 @@ void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, 
 				int real_t = t-90;
 				if (fabs(real_t) <= theresold_horizon) //Horizontals Lines
 				{
-						(size_horizontals)*++;
+						size_horizontals++;
 						horizontals = (struct Line*)realloc(horizontals,size_horizontals*sizeof(struct Line));
 						horizontals[size_horizontals - 1].slope = real_p / sin(real_t * M_PI / 180);
 						horizontals[size_horizontals - 1].intercept = -cos(real_t * M_PI / 180)/sin(real_t * M_PI / 180);
