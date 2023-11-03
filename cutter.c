@@ -32,6 +32,6 @@ int main(int argc, char** argv)
 
     const int diag_size = (int)Calculate_Diagonal(surface);
     int* mat = Init_Mat(diag_size);
-    Fill_Mat(surface,mat,diag_size);
-   Debug(mat, diag_size,argv[1],surface->w,surface->h);
+    int max = Fill_Mat(surface,mat,diag_size);
+   Debug(mat, diag_size,argv[1],surface->w,surface->h,max);
 }

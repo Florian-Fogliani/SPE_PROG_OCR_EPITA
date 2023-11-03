@@ -32,14 +32,16 @@ int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 				{
 					int p = (int)(w*cos(theta * M_PI / 180) + h*sin(theta * M_PI/180));
 					mat[(p+diag_size)*(180)+(theta+90)] += 1;
+					if (mat[(p+diag_size)*(180)+(theta+90)] > max)
+					{
+						max = mat[(p+diag_size)*180+(theta+90)];
+					}
 				}	
 			}
 		}
 	}
 	return max;
 }
-
-void Detect_Max() {}
 
 double Calculate_Diagonal(SDL_Surface* img)
 {
@@ -49,20 +51,21 @@ double Calculate_Diagonal(SDL_Surface* img)
 	return res;
 }
 
-void Debug(int* mat,const int diag_size,char* img,int w, int h)
+void Debug(int* mat,const int diag_size,char* img,int w, int h,int max)
 {
 	SDL_Window* window = SDL_CreateWindow("Debug",0,0,w,h,SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
+	int seuil = max*0.4;
 	for (int p=0; p<=diag_size*2; p++)
 	{
 		for (int t=0; t<=180; t++)
 		{
-			if (mat[p*(180)+t] > 100)
+			if (mat[p*(180)+t] > seuil)
 			{
-				drawLine(renderer,p-diag_size,t-90,w);
+				drawLine(renderer,p-diag_size,t-90,w,h);
 			}
 		}
 	}
@@ -77,13 +80,86 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h)
 		}
 	}
 }
-void drawLine(SDL_Renderer* renderer, int rho, int theta,int width)
+void drawLine(SDL_Renderer* renderer, int rho, int theta,int width,int height)
 {
-	double angleRad = theta*M_PI/180;
-	int x0 = 0;
-	int y0 = rho / sin(angleRad);
-	int x1 = width-1;
-	int y1 = x1 * -cos(angleRad)/sin(angleRad) + y0;
-	SDL_RenderDrawLine(renderer,x0,y0,x1,y1);
+	if (theta == 0)
+	{
+		SDL_RenderDrawLine(renderer, rho, 1, rho, height);
+	}
+	else
+	{
+		double angleRad = theta*M_PI/180;
+		int x0 = 0;
+		int y0 = rho / sin(angleRad);
+		int x1 = width-1;
+		int y1 = x1 * -cos(angleRad)/sin(angleRad) + y0;
+		SDL_RenderDrawLine(renderer,x0,y0,x1,y1);
+	}
 }
 
+
+struct Point()
+{
+	int x; 
+	int y;
+};
+
+struct Line()
+{
+	int slope;
+	int intercept;
+}
+
+void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img)
+{
+	SDL_Window* window = SDL_CreateWindow("Debug GetLines",0,0,w,h,SDL_WINDOW_SHOWN);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+	SDL_SetRenderDrawColor(renderer,238,130,238,255);
+	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
+	SDL_RenderCopy(renderer,texture,NULL,NULL);
+	for (int i=0; i<size_horizontals, i++)
+	{
+		SDL_RenderDrawLine(renderer, 0, horizontals[i]->intercept, w-1, (w-1)*horizontals[i]->slope + horizontals[i]->intercept);
+	}
+	SDL_RenderPresent(renderer);
+	SDL_Event event;
+	while(1)
+	{
+		SDL_WaitEvent(&event);
+		switch (event.type)
+		{
+			case SDL_Quit : return;
+		}
+	}
+}
+
+void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, struct Line* verticals,int* size_horizontals, int* size_verticals)
+{
+	int thresold = max* 0.4;
+	int tresold_horizon = 4;
+	for (int p=0; p<diag_size*2; p++)
+	{
+		for (int t=0; t<180; t++)
+		{
+			if (mat[p*180+t] > thresold)
+			{
+				int real_p = p-diag_size;
+				int real_t = t-90;
+				if (fabs(real_t) <= theresold_horizon) //Horizontals Lines
+				{
+						(size_horizontals)*++;
+						horizontals = (struct Line*)realloc(horizontals,size_horizontals*sizeof(struct Line));
+						horizontals[size_horizontals - 1].slope = real_p / sin(real_t * M_PI / 180);
+						horizontals[size_horizontals - 1].intercept = -cos(real_t * M_PI / 180)/sin(real_t * M_PI / 180);
+					}
+				}
+				//if (fabs(t-90-CV_PI/2) < ang
+			}
+		}
+	}
+}
+
+void GetIntersec()
+{
+
+}
