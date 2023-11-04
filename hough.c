@@ -69,7 +69,6 @@ void Debug(int* mat,const int diag_size,char* img,int w, int h,int max)
 		{
 			if (mat[p*(180)+t] > seuil)
 			{
-				printf("%d %d \n",p-diag_size,t-90);
 				drawLine(renderer,p-diag_size,t-90,w,h);
 			}
 		}
@@ -243,25 +242,14 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     {
         printf("Erreur Hori");
     }
-printf("======================== \n");
-for (int i=0; i<10; i++)
-{
-    printf("%d %d \n",hor[i].rho,hor[i].theta);
-
-}
-for (int i=0; i<10; i++)
-{
-    printf("%d %d \n",ver[i].rho, ver[i].theta);
-}
     int x1 = ver[0].rho; 
     int y1 = img->h + hor[0].rho;
     int x2 = ver[9].rho;
     int y2 = img->h + hor[9].rho;
 
-    printf("\n Horizontal : %d \n",hor[9].rho);
+    
     struct Point up = {x1,y1};
     struct Point down = {x2,y2};
-    printf("x1 : %d y1 : %d x2 : %d y2 : %d",x1,y1,x2,y2);
     SaveCas(img,0,0,up,down);
 }
 void CutFinale(SDL_Surface* img)
@@ -274,7 +262,7 @@ void CutFinale(SDL_Surface* img)
             struct Point up = {x,y};
             struct Point down = {x+step,y+step};
             SaveCas(img,y%9+1,x%9+1,up,down);
-            printf("\nUp : %d %d Down : %d %d\n",x,y,x+step,y+step);
+            
         }
     }
 
