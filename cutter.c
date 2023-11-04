@@ -33,19 +33,25 @@ int main(int argc, char** argv)
     const int diag_size = (int)Calculate_Diagonal(surface);
     int* mat = Init_Mat(diag_size);
     int max = Fill_Mat(surface,mat,diag_size);
-    if (argv[2] == "debug")
+    if (strcmp(argv[2],"debug")==0)
     {
 	    Debug(mat, diag_size, argv[1], surface->w, surface->h, max);
     }
-    int type_debug = 0;
-    if (argv[2] == "vertical")
+    else
     {
-	    type_debug = 1;
+    	int type_debug = 0;
+    	if (strcmp(argv[2],"vertical")==0)
+    	{
+		    type_debug = 1;
+    	}
+    	struct Line* horizontals = malloc(sizeof(struct Line));
+    	struct Line* verticals = malloc(sizeof(struct Line));
+    	int size_horizontals=1;
+    	int size_verticals=1;
+    	GetLines
+            (mat,diag_size,max, &horizontals, &verticals,
+             &size_horizontals,&size_verticals);
+    	Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,
+                surface->w,surface->h, argv[1],type_debug);
     }
-    struct Line* horizontals = malloc(sizeof(struct Line));
-    struct Line* verticals = malloc(sizeof(struct Line));
-    int size_horizontals=1;
-    int size_verticals=1;
-    GetLines(mat,diag_size,max, &horizontals, &verticals,&size_horizontals,&size_verticals);
-    Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,surface->w,surface->h, argv[1],diag_size,type_debug);
 }

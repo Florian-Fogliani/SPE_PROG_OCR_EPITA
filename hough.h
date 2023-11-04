@@ -9,7 +9,8 @@ double Calculate_Diagonal(SDL_Surface* img);
 int* Init_Mat(const int R);
 int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size);
 void Debug(int* mat, const int diag_size,char* img,int w,int h,int max);
-void drawLine(SDL_Renderer* renderer, int rho, int theta, int width,int height);
+void drawLine
+(SDL_Renderer* renderer, int rho, int theta, int width,int height);
 struct Point
 {
 	int x;
@@ -20,7 +21,12 @@ struct Line
 	int rho;
 	int theta;
 };
-void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals, int w,int h, char* img, const int diag_size, int type);
-void GetLines(int* mat, const int diag_size,int max, struct Line** horizontals, struct Line** verticals, int* size_horizontals, int* size_verticals);
+void Debug_GetLines
+(struct Line* horizontals, struct Line* verticals, 
+ int* size_horizontals, int* size_verticals, int w,int h, char* img, int type);
+void GetLines(int* mat, const int diag_size,int max, 
+        struct Line** horizontals, struct Line** verticals, 
+        int* size_horizontals, int* size_verticals);
+void Insert_Sort(struct Line** tab, int* len, struct Line* line);
 
 #endif 

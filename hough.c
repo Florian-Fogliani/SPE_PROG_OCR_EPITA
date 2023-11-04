@@ -32,7 +32,8 @@ int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 			{
 				for (int theta = -90; theta<=90; theta++)
 				{
-					int p = (int)(w*cos(theta * M_PI / 180) + h*sin(theta * M_PI/180));
+					int p = (int)(w*cos(theta * M_PI / 180) 
+                            + h*sin(theta * M_PI/180));
 					mat[(p+diag_size)*(180)+(theta+90)] += 1;
 					if (mat[(p+diag_size)*(180)+(theta+90)] > max)
 					{
@@ -56,7 +57,8 @@ double Calculate_Diagonal(SDL_Surface* img)
 void Debug(int* mat,const int diag_size,char* img,int w, int h,int max)
 {
 	SDL_Window* window = SDL_CreateWindow("Debug",0,0,w,h,SDL_WINDOW_SHOWN);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+	SDL_Renderer* renderer =
+        SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
@@ -102,10 +104,14 @@ void drawLine(SDL_Renderer* renderer, int rho, int theta,int width,int height)
 
 
 
-void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img,const int diag_size,int type)
+void Debug_GetLines
+(struct Line* horizontals, struct Line* verticals, 
+ int* size_horizontals, int* size_verticals,int w, int h, char* img,int type)
 {
-	SDL_Window* window = SDL_CreateWindow("Debug GetLines",0,0,w,h,SDL_WINDOW_SHOWN);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+	SDL_Window* window = 
+        SDL_CreateWindow("Debug GetLines",0,0,w,h,SDL_WINDOW_SHOWN);
+	SDL_Renderer* renderer = 
+        SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
@@ -122,8 +128,8 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 	{
 		for (int i=0; i<(*size_verticals); i++)
 		{
-			int p = horizontals[i].rho;
-			int t= horizontals[i].theta;
+			int p = verticals[i].rho;
+			int t= verticals[i].theta;
 			drawLine(renderer,p,t,w,h);
 		}
 	}
@@ -139,10 +145,13 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 	}
 }
 
-void GetLines(int* mat, const int diag_size, int max, struct Line** horizontals, struct Line** verticals,int* size_horizontals, int* size_verticals)
+void GetLines
+(int* mat,int diag_size, int max, 
+ struct Line** horizontals, struct Line** verticals,
+ int* size_horizontals, int* size_verticals)
 {
 	int thresold = max * 0.4;
-	int thresold_horizon = 6;
+	int thresold_horizon = 5;
 	for (int p=0; p<=diag_size*2; p++)
 	{
 		for (int t=0; t<=180; t++)
@@ -166,14 +175,14 @@ void GetLines(int* mat, const int diag_size, int max, struct Line** horizontals,
 	}
 }
 
-void insert_sort(struct Line** tab, size_t* len, struct Line* line)
+void Insert_Sort(struct Line** tab, int* len, struct Line* line)
 {
-    size_t i = 0;
+    int i = 0;
     while (i < *len && line->rho > (*tab + i)->rho)
         i++;
     (*len)++;
     *tab = realloc(*tab, (*len)  * sizeof(struct Line));
-    size_t index = i;
+    int index = i;
     i = (*len) - 1;;
     while (i > index)
     {
