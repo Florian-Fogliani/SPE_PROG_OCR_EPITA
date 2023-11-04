@@ -162,13 +162,11 @@ void GetLines
 				int real_t = t-90;
 				if (abs(real_t) > thresold_horizon) //Horizontals Lines
 				{
-                    printf("%d %d \n",real_p,real_t);
 						struct Line to_save = {real_p, real_t};
 						Insert_Sort(horizontals, size_horizontals, &to_save);
 				}
 				if (abs(real_t) <= thresold_horizon) //Verticals Lines
 				{
-                    printf("%d %d \n",real_p,real_t);
 					struct Line to_save = {real_p, real_t};
 					Insert_Sort(verticals, size_verticals, &to_save);
 				}
@@ -216,33 +214,27 @@ void SaveCas
     int y1 = bord_up.y;
     int x2 = bord_down.x;
     int y2 = bord_down.y;
-    printf("x1 : %d y1:%d x2:%d y2:%d \n",x1,y1,x2,y2);
     int largeur = x2-x1;
     int hauteur = y2-y1;
-    SDL_Rect tocapture = {x1,y1,largeur,hauteur};
-    SDL_Surface* capture = 
-        SDL_CreateRGBSurface(0,largeur,hauteur,32,0,0,0,0);
+    SDL_Rect rect;
+    rect.x = x1;
+    rect.y = y1;
+    rect.w = largeur;
+    rect.h = hauteur;
+    SDL_Surface* capture = SDL_CreateRGBSurface(0,largeur,hauteur,32,0,0,0,0);
     char name[20];
     sprintf(name,"mat_%d_%d",nb_l,nb_col);
-    SDL_BlitSurface(img,&tocapture,capture,NULL);
+    SDL_BlitSurface(img,&rect,capture,NULL);
     IMG_SavePNG(capture,name);
     SDL_FreeSurface(capture);
 }
 
 void Cut(struct Line** horizontals, struct Line ** verticals, 
-        int* size_h, int* size_v,SDL_Surface* img,const int diag_size)
+        int* size_h, int* size_v,SDL_Surface* img)
 {
     struct Line* hor = (struct Line*)get_10_lines(*(horizontals),*size_h,10);
     struct Line* ver = (struct Line*)get_10_lines(*(verticals),*size_v,10);
-    printf("=====================================");
-    for (int i=0; i<10; i++)
-    {
-        printf("%d %d \n",hor[i].rho,hor[i].theta);
-    }
-    for (int i=0; i<10; i++)
-    {
-        printf("%d %d \n", ver[i].rho,ver[i].theta);
-    }
+
     if (ver == NULL )
     {
         printf("Erreur Verti");
@@ -251,37 +243,42 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     {
         printf("Erreur Hori");
     }
+printf("======================== \n");
+for (int i=0; i<10; i++)
+{
+    printf("%d %d \n",hor[i].rho,hor[i].theta);
 
-    /*double anglerad1= (double)hor[0].theta * M_PI / 180;
-    double anglerad2 = (double)ver[0].theta * M_PI / 180;
-    int p1 = -cos(anglerad1) / sin(anglerad1);
-    int o1 = (double)(hor[0].rho) / sin(anglerad1);
-    int p2 = -cos(anglerad2)/sin(anglerad2);
-    int o2 = (double)(ver[0].rho) / sin(anglerad2);
-    printf("Rho : %d %d Theta: %d %d\n", hor[0].rho,ver[0].rho,hor[0].theta,ver[0].theta);
-    printf("p1 :%d o1 :%d p2: %d o2:%d\n",p1,o1,p2,o2);
-    struct Point up = GetIntersec(p1,o1,p2,02);
-    printf("Up : %d %d\n", up.x, up.y);
-    anglerad1=(double)hor[9].theta * M_PI/180;
-    anglerad2 =(double)ver[9].theta * M_PI / 180;
-    p1 = -cos(anglerad1)/sin(anglerad1);
-    o1 = (double)(hor[9].rho) /sin(anglerad1);
-    p2 = -cos(anglerad2)/sin(anglerad2);
-    o2 = (double)(ver[9].rho) / sin(anglerad2);
-    struct Point down = GetIntersec(p1,o1,p2,o2);
-    printf("p1:%d o1: %d p2: %d o2: %d\n",p1,o1,p2,o2);
-    printf("Down : %d %d\n",down.x,down.y);*/
+}
+for (int i=0; i<10; i++)
+{
+    printf("%d %d \n",ver[i].rho, ver[i].theta);
+}
+    int x1 = ver[0].rho; 
+    int y1 = img->h + hor[0].rho;
+    int x2 = ver[9].rho;
+    int y2 = img->h + hor[9].rho;
 
-    int x1 = hor[0].rho + diag_size; 
-    int y1 = ver[0].rho + diag_size;
-    int x2 = hor[9].rho + diag_size;
-    int y2 = ver[9].rho + diag_size;
+    printf("\n Horizontal : %d \n",hor[9].rho);
     struct Point up = {x1,y1};
     struct Point down = {x2,y2};
     printf("x1 : %d y1 : %d x2 : %d y2 : %d",x1,y1,x2,y2);
     SaveCas(img,0,0,up,down);
 }
+void CutFinale(SDL_Surface* img)
+{
+    int step = img->w/9;
+    for (int y=0; y<img->w-step; y+=step)
+    {
+        for (int x=0; x<img->w-step; x+=step)
+        {
+            struct Point up = {x,y};
+            struct Point down = {x+step,y+step};
+            SaveCas(img,y%9+1,x%9+1,up,down);
+            printf("\nUp : %d %d Down : %d %d\n",x,y,x+step,y+step);
+        }
+    }
 
+}
 struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
         int i)
 {

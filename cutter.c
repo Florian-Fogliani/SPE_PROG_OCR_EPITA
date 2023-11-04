@@ -46,7 +46,9 @@ int main(int argc, char** argv)
         GetLines
             (mat, diag_size,max,&horizontals, &verticals, 
              &size_h, &size_v);
-        Cut(&horizontals,&verticals,&size_h,&size_v,surface,diag_size);
+        Cut(&horizontals,&verticals,&size_h,&size_v,surface);
+        SDL_Surface* to_cut = load_image("mat_0_0");
+        CutFinale(to_cut);
     }
     else
     {
