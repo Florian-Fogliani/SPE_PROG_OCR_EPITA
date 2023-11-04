@@ -41,12 +41,12 @@ int main(int argc, char** argv)
     {
         struct Line* horizontals = malloc(sizeof(struct Line));
         struct Line* verticals = malloc(sizeof(struct Line));
-        int size_h=1;
-        int size_v=1;
+        int size_h=0;
+        int size_v=0;
         GetLines
             (mat, diag_size,max,&horizontals, &verticals, 
              &size_h, &size_v);
-        Cut(&horizontals,&verticals,&size_h,&size_v,surface);
+        Cut(&horizontals,&verticals,&size_h,&size_v,surface,diag_size);
     }
     else
     {

@@ -162,11 +162,13 @@ void GetLines
 				int real_t = t-90;
 				if (abs(real_t) > thresold_horizon) //Horizontals Lines
 				{
+                    printf("%d %d \n",real_p,real_t);
 						struct Line to_save = {real_p, real_t};
 						Insert_Sort(horizontals, size_horizontals, &to_save);
 				}
 				if (abs(real_t) <= thresold_horizon) //Verticals Lines
 				{
+                    printf("%d %d \n",real_p,real_t);
 					struct Line to_save = {real_p, real_t};
 					Insert_Sort(verticals, size_verticals, &to_save);
 				}
@@ -195,6 +197,11 @@ void Insert_Sort(struct Line** tab, int* len, struct Line* line)
 struct Point GetIntersec(int p1, int o1, int p2, int o2)
 {
     struct Point intersec;
+    if (p1 == p2)
+    {
+        printf("Error : droites parallèles");
+    }
+
     intersec.x = (o2-o1)/(p1-p2);
     intersec.y = p1 * intersec.x + o1;
     return intersec;
@@ -204,10 +211,12 @@ void SaveCas
 (SDL_Surface* img,int nb_l, int nb_col, 
  struct Point bord_up, struct Point bord_down)
 {
+
     int x1 = bord_up.x;
     int y1 = bord_up.y;
     int x2 = bord_down.x;
     int y2 = bord_down.y;
+    printf("x1 : %d y1:%d x2:%d y2:%d \n",x1,y1,x2,y2);
     int largeur = x2-x1;
     int hauteur = y2-y1;
     SDL_Rect tocapture = {x1,y1,largeur,hauteur};
@@ -216,15 +225,24 @@ void SaveCas
     char name[20];
     sprintf(name,"mat_%d_%d",nb_l,nb_col);
     SDL_BlitSurface(img,&tocapture,capture,NULL);
-    SDL_SaveBMP(capture,name);
+    IMG_SavePNG(capture,name);
     SDL_FreeSurface(capture);
 }
 
 void Cut(struct Line** horizontals, struct Line ** verticals, 
-        int* size_h, int* size_v,SDL_Surface* img)
+        int* size_h, int* size_v,SDL_Surface* img,const int diag_size)
 {
-    struct Line* hor = (struct Line*)get_10_lines(*(horizontals)+1,*size_h-1,10);
-    struct Line* ver = (struct Line*)get_10_lines(*(verticals)+1,*size_v-1,10);
+    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),*size_h,10);
+    struct Line* ver = (struct Line*)get_10_lines(*(verticals),*size_v,10);
+    printf("=====================================");
+    for (int i=0; i<10; i++)
+    {
+        printf("%d %d \n",hor[i].rho,hor[i].theta);
+    }
+    for (int i=0; i<10; i++)
+    {
+        printf("%d %d \n", ver[i].rho,ver[i].theta);
+    }
     if (ver == NULL )
     {
         printf("Erreur Verti");
@@ -233,29 +251,35 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     {
         printf("Erreur Hori");
     }
-    for (int h = 0; h<=8; h++)
-    {
-        for (int v = 0; v<=8; v++)
-        {
-            //Up left corner
-           int anglerad1 = hor[h].theta * M_PI / 180;
-            int anglerad2 = ver[v].theta * M_PI / 180; 
-            int p1 = - cos(anglerad1) / sin(anglerad1);
-            int o1 = hor[h].rho / sin(anglerad1);
-            int p2 = -cos(anglerad2)/sin(anglerad2);
-            int o2 = ver[v].rho / sin(anglerad2);
-            struct Point up = GetIntersec(p1,o1,p2,o2);
-            //Down Rigth corner
-            anglerad1 = hor[h+1].theta * M_PI / 180;
-            anglerad2 = ver[v+1].theta * M_PI / 180;
-            p1 = -cos(anglerad1)/sin(anglerad1);
-            o1 = hor[h+1].rho / sin(anglerad1);
-            p2 = -cos(anglerad2)/sin(anglerad2);
-            o2 = ver[v+1].rho / sin(anglerad2);
-            struct Point down = GetIntersec(p1,o1,p2,o2);
-            SaveCas(img, h+1, v+1, up, down);
-        }
-    }
+
+    /*double anglerad1= (double)hor[0].theta * M_PI / 180;
+    double anglerad2 = (double)ver[0].theta * M_PI / 180;
+    int p1 = -cos(anglerad1) / sin(anglerad1);
+    int o1 = (double)(hor[0].rho) / sin(anglerad1);
+    int p2 = -cos(anglerad2)/sin(anglerad2);
+    int o2 = (double)(ver[0].rho) / sin(anglerad2);
+    printf("Rho : %d %d Theta: %d %d\n", hor[0].rho,ver[0].rho,hor[0].theta,ver[0].theta);
+    printf("p1 :%d o1 :%d p2: %d o2:%d\n",p1,o1,p2,o2);
+    struct Point up = GetIntersec(p1,o1,p2,02);
+    printf("Up : %d %d\n", up.x, up.y);
+    anglerad1=(double)hor[9].theta * M_PI/180;
+    anglerad2 =(double)ver[9].theta * M_PI / 180;
+    p1 = -cos(anglerad1)/sin(anglerad1);
+    o1 = (double)(hor[9].rho) /sin(anglerad1);
+    p2 = -cos(anglerad2)/sin(anglerad2);
+    o2 = (double)(ver[9].rho) / sin(anglerad2);
+    struct Point down = GetIntersec(p1,o1,p2,o2);
+    printf("p1:%d o1: %d p2: %d o2: %d\n",p1,o1,p2,o2);
+    printf("Down : %d %d\n",down.x,down.y);*/
+
+    int x1 = hor[0].rho + diag_size; 
+    int y1 = ver[0].rho + diag_size;
+    int x2 = hor[9].rho + diag_size;
+    int y2 = ver[9].rho + diag_size;
+    struct Point up = {x1,y1};
+    struct Point down = {x2,y2};
+    printf("x1 : %d y1 : %d x2 : %d y2 : %d",x1,y1,x2,y2);
+    SaveCas(img,0,0,up,down);
 }
 
 struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
@@ -316,6 +340,6 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold)
         }
         i++;
     }
-    write(2, "can't find 10 lines\n", 20);
+    //write(2, "can't find 10 lines\n", 20);
     return NULL;
 }
