@@ -37,6 +37,17 @@ int main(int argc, char** argv)
     {
 	    Debug(mat, diag_size, argv[1], surface->w, surface->h, max);
     }
+    else if (strcmp(argv[2],"all")==0)
+    {
+        struct Line* horizontals = malloc(sizeof(struct Line));
+        struct Line* verticals = malloc(sizeof(struct Line));
+        int size_h=1;
+        int size_v=1;
+        GetLines
+            (mat, diag_size,max,&horizontals, &verticals, 
+             &size_h, &size_v);
+        Cut(&horizontals,&verticals,&size_h,&size_v,surface);
+    }
     else
     {
     	int type_debug = 0;

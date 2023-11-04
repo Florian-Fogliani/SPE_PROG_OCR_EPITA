@@ -223,14 +223,24 @@ void SaveCas
 void Cut(struct Line** horizontals, struct Line ** verticals, 
         int* size_h, int* size_v,SDL_Surface* img)
 {
-    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),size_h,10);
-    struct Line* ver = (struct Line*)get_10_lines(*(verticals),size_v,10);
+    struct Line* hor = (struct Line*)get_10_lines(*(horizontals)+1,*size_h-1,10);
+    struct Line* ver = (struct Line*)get_10_lines(*(verticals)+1,*size_v-1,10);
+    if (ver == NULL )
+    {
+        printf("Erreur Verti");
+        //return;
+    }
+    if (hor == NULL)
+    {
+        printf("Erreur Hori");
+        return;
+    }
     for (int h = 0; h<=8; h++)
     {
         for (int v = 0; v<=8; v++)
         {
             //Up left corner
-            int anglerad1 = hor[h].theta * M_PI / 180;
+           /* int anglerad1 = hor[h].theta * M_PI / 180;
             int anglerad2 = ver[v].theta * M_PI / 180; 
             int p1 = - cos(anglerad1) / sin(anglerad1);
             int o1 = hor[h].rho / sin(anglerad1);
@@ -245,7 +255,7 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
             p2 = -cos(anglerad2)/sin(anglerad2);
             o2 = ver[v+1].rho / sin(anglerad2);
             struct Point down = GetIntersec(p1,o1,p2,o2);
-            SaveCas(img, h+1, v+1, up, down);
+            SaveCas(img, h+1, v+1, up, down);*/
         }
     }
 }
