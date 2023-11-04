@@ -191,7 +191,28 @@ void Insert_Sort(struct Line** tab, int* len, struct Line* line)
     }
     (*tab)[index] = *line;
 }
-void GetIntersec()
-{
 
+struct Point GetIntersec(int p1, int o1, int p2, int o2)
+{
+    Point intersec;
+    intersec.x = (o2-o1)/(p1-p2);
+    intersec.y = p1 * intersec.x + b1;
+    return intersec;
+}
+
+void SaveCas(SDL_Surface* img,int nb_l, int nb_col, struct Point bord_up, struct Point bord_down)
+{
+    int x1 = bord_up.x;
+    int y1 = bord_up.y;
+    int x2 = bord_down.x;
+    int y2 = bord_down.y;
+    int largeur = x2-x1;
+    int hauteur = y2-y1;
+    SDL_Rect tocapture = {x1,y1,largeur,hauteur};
+    SDL_Surface* capture = 
+        SDL_CreaterRGB_Surface(0,largeur,hauteur,32,0,0,0,0);
+    char name[20];
+    sprintf(name,"mat_%d_%d",nb_l,nb_col);
+    SDL_SaveBPM(capture,name);
+    SDL_FreeSurface(capture);
 }
