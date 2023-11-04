@@ -228,19 +228,17 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     if (ver == NULL )
     {
         printf("Erreur Verti");
-        //return;
     }
     if (hor == NULL)
     {
         printf("Erreur Hori");
-        return;
     }
     for (int h = 0; h<=8; h++)
     {
         for (int v = 0; v<=8; v++)
         {
             //Up left corner
-           /* int anglerad1 = hor[h].theta * M_PI / 180;
+           int anglerad1 = hor[h].theta * M_PI / 180;
             int anglerad2 = ver[v].theta * M_PI / 180; 
             int p1 = - cos(anglerad1) / sin(anglerad1);
             int o1 = hor[h].rho / sin(anglerad1);
@@ -255,58 +253,69 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
             p2 = -cos(anglerad2)/sin(anglerad2);
             o2 = ver[v+1].rho / sin(anglerad2);
             struct Point down = GetIntersec(p1,o1,p2,o2);
-            SaveCas(img, h+1, v+1, up, down);*/
+            SaveCas(img, h+1, v+1, up, down);
         }
     }
 }
 
-struct Line* get_10_lines(struct Line* tab, int len, int threshold)
+struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
+        int i)
 {
-    int len2 = 0;
-    struct Line* ten = malloc(1);
+        struct Line* ten = malloc(1);
+        
+        int a = i;
+        int b = a + 1;
+        int n = 0;
+        int diff = tab[b].rho - tab[a].rho;
 
-    int i  = 1;
-    int j = 0;
-    int diff = 0;
-    int last_diff = tab[1].rho - tab[0].rho;
-    int max = len - 1;
-    while (i < max)
-    {
-        diff = tab[i + 1].rho - tab[i].rho;
-        if (diff > threshold)
+        while (b < len && ref - diff >= -threshold)
         {
-            int abs_diff = diff - last_diff;
-            if (abs_diff < 0)
-                abs_diff = -abs_diff;
-            if (abs_diff < threshold)
+            if (ref - diff <= threshold)
             {
-                len2++;
-                ten = realloc(ten, len2 * sizeof(struct Line));
-                ten[j] = tab[i];
-                j++;
-                if (len2 == 10)
+                n++;
+                ten = realloc(ten, n * sizeof(struct Line));
+                ten[n - 1] = tab[a];
+                a = b;
+                b = a + 1;
+                if (n == 10)
                     return ten;
             }
             else
-            {
-                len2 = 1;
-                ten = malloc(1 * sizeof(struct Line));
-                ten[0] = tab[i];
-                j = 1;
-            }
-
+                b++;
+            diff = tab[b].rho - tab[a].rho;
         }
-        last_diff = diff;
+
+        if (n == 9 && ref - tab[len - 1].rho - tab[a].rho <= threshold)
+        {
+            ten = realloc(ten, 10 * sizeof(struct Line));
+            ten[n] = tab[len - 1];
+            return ten;
+        }
+
+        return NULL;
+}
+
+struct Line* get_10_lines(struct Line* tab, int len, int threshold)
+{
+    struct Line* ten;
+
+    int i = 0;
+    int j = 0;
+    int max = len - 10;
+
+    while (i <= max)
+    {
+        j = i + 1;
+        while (j <= len)
+        {
+            int ref = tab[j].rho - tab[i].rho;
+            ten = get_10_refs(tab, len, threshold, ref, i);
+            if (ten != NULL)
+                return ten;
+            j++;
+        }
         i++;
     }
-    if (len2 == 10)
-        return ten;
-    else if (len2 == 9 && tab[max].rho - tab[max - 1].rho == last_diff)
-    {
-        ten = realloc(ten, 10 * sizeof(struct Line));
-        ten[9] = tab[max];
-        return ten;
-    }
-    //write(2, "can't find 10 lines\n", 19);
+    write(2, "can't find 10 lines\n", 20);
     return NULL;
 }
