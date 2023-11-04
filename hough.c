@@ -194,13 +194,15 @@ void Insert_Sort(struct Line** tab, int* len, struct Line* line)
 
 struct Point GetIntersec(int p1, int o1, int p2, int o2)
 {
-    Point intersec;
+    struct Point intersec;
     intersec.x = (o2-o1)/(p1-p2);
-    intersec.y = p1 * intersec.x + b1;
+    intersec.y = p1 * intersec.x + o1;
     return intersec;
 }
 
-void SaveCas(SDL_Surface* img,int nb_l, int nb_col, struct Point bord_up, struct Point bord_down)
+void SaveCas
+(SDL_Surface* img,int nb_l, int nb_col, 
+ struct Point bord_up, struct Point bord_down)
 {
     int x1 = bord_up.x;
     int y1 = bord_up.y;
@@ -210,11 +212,42 @@ void SaveCas(SDL_Surface* img,int nb_l, int nb_col, struct Point bord_up, struct
     int hauteur = y2-y1;
     SDL_Rect tocapture = {x1,y1,largeur,hauteur};
     SDL_Surface* capture = 
-        SDL_CreaterRGB_Surface(0,largeur,hauteur,32,0,0,0,0);
+        SDL_CreateRGBSurface(0,largeur,hauteur,32,0,0,0,0);
     char name[20];
     sprintf(name,"mat_%d_%d",nb_l,nb_col);
-    SDL_SaveBPM(capture,name);
+    SDL_BlitSurface(img,&tocapture,capture,NULL);
+    SDL_SaveBMP(capture,name);
     SDL_FreeSurface(capture);
+}
+
+void Cut(struct Line** horizontals, struct Line ** verticals, 
+        int* size_h, int* size_v,SDL_Surface* img)
+{
+    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),size_h,10);
+    struct Line* ver = (struct Line*)get_10_lines(*(verticals),size_v,10);
+    for (int h = 0; h<=8; h++)
+    {
+        for (int v = 0; v<=8; v++)
+        {
+            //Up left corner
+            int anglerad1 = hor[h].theta * M_PI / 180;
+            int anglerad2 = ver[v].theta * M_PI / 180; 
+            int p1 = - cos(anglerad1) / sin(anglerad1);
+            int o1 = hor[h].rho / sin(anglerad1);
+            int p2 = -cos(anglerad2)/sin(anglerad2);
+            int o2 = ver[v].rho / sin(anglerad2);
+            struct Point up = GetIntersec(p1,o1,p2,o2);
+            //Down Rigth corner
+            anglerad1 = hor[h+1].theta * M_PI / 180;
+            anglerad2 = ver[v+1].theta * M_PI / 180;
+            p1 = -cos(anglerad1)/sin(anglerad1);
+            o1 = hor[h+1].rho / sin(anglerad1);
+            p2 = -cos(anglerad2)/sin(anglerad2);
+            o2 = ver[v+1].rho / sin(anglerad2);
+            struct Point down = GetIntersec(p1,o1,p2,o2);
+            SaveCas(img, h+1, v+1, up, down);
+        }
+    }
 }
 
 struct Line* get_10_lines(struct Line* tab, int len, int threshold)
@@ -222,8 +255,8 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold)
     int len2 = 0;
     struct Line* ten = malloc(1);
 
-    size_t i  = 1;
-    size_t j = 0;
+    int i  = 1;
+    int j = 0;
     int diff = 0;
     int last_diff = tab[1].rho - tab[0].rho;
     int max = len - 1;
@@ -264,6 +297,6 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold)
         ten[9] = tab[max];
         return ten;
     }
-    write(2, "can't find 10 lines\n", 19);
+    //write(2, "can't find 10 lines\n", 19);
     return NULL;
 }
