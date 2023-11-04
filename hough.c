@@ -216,3 +216,54 @@ void SaveCas(SDL_Surface* img,int nb_l, int nb_col, struct Point bord_up, struct
     SDL_SaveBPM(capture,name);
     SDL_FreeSurface(capture);
 }
+
+struct Line* get_10_lines(struct Line* tab, int len, int threshold)
+{
+    int len2 = 0;
+    struct Line* ten = malloc(1);
+
+    size_t i  = 1;
+    size_t j = 0;
+    int diff = 0;
+    int last_diff = tab[1].rho - tab[0].rho;
+    int max = len - 1;
+    while (i < max)
+    {
+        diff = tab[i + 1].rho - tab[i].rho;
+        if (diff > threshold)
+        {
+            int abs_diff = diff - last_diff;
+            if (abs_diff < 0)
+                abs_diff = -abs_diff;
+            if (abs_diff < threshold)
+            {
+                len2++;
+                ten = realloc(ten, len2 * sizeof(struct Line));
+                ten[j] = tab[i];
+                j++;
+                if (len2 == 10)
+                    return ten;
+            }
+            else
+            {
+                len2 = 1;
+                ten = malloc(1 * sizeof(struct Line));
+                ten[0] = tab[i];
+                j = 1;
+            }
+
+        }
+        last_diff = diff;
+        i++;
+    }
+    if (len2 == 10)
+        return ten;
+    else if (len2 == 9 && tab[max].rho - tab[max - 1].rho == last_diff)
+    {
+        ten = realloc(ten, 10 * sizeof(struct Line));
+        ten[9] = tab[max];
+        return ten;
+    }
+    write(2, "can't find 10 lines\n", 19);
+    return NULL;
+}
