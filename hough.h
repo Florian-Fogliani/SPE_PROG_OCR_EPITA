@@ -21,6 +21,6 @@ struct Line
 	int theta;
 };
 void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals, int w,int h, char* img, const int diag_size);
-void GetLines(int* mat, const int diag_size,int max, struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals);
+void GetLines(int* mat, const int diag_size,int max, struct Line** horizontals, struct Line** verticals, int* size_horizontals, int* size_verticals);
 
 #endif 

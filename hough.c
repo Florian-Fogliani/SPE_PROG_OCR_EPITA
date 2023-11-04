@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <err.h>
 #include <math.h>
+#include <stdlib.h>
 
 
 int* Init_Mat(const int R)
@@ -37,7 +38,7 @@ int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 					{
 						max = mat[(p+diag_size)*180+(theta+90)];
 					}
-				}	
+				}
 			}
 		}
 	}
@@ -128,7 +129,7 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 	}
 }
 
-void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, struct Line* verticals,int* size_horizontals, int* size_verticals)
+void GetLines(int* mat, const int diag_size, int max, struct Line** horizontals, struct Line** verticals,int* size_horizontals, int* size_verticals)
 {
 	int thresold = max * 0.4;
 	int thresold_horizon = 90;
@@ -143,9 +144,9 @@ void GetLines(int* mat, const int diag_size, int max, struct Line* horizontals, 
 				//if (abs(real_t) <= thresold_horizon) //Horizontals Lines
 				//{
 						*size_horizontals = *size_horizontals + 1;
-						horizontals = (struct Line*)realloc(horizontals,*(size_horizontals)*sizeof(struct Line));
+						*horizontals = realloc(*horizontals,*(size_horizontals)*sizeof(struct Line));
 						struct Line to_save = {real_p, real_t};
-						horizontals[*(size_horizontals) - 1] = to_save;
+						(*horizontals)[*size_horizontals-1] = to_save;
 				//}
 			}
 				//if (fabs(t-90-CV_PI/2) < ang
