@@ -102,20 +102,30 @@ void drawLine(SDL_Renderer* renderer, int rho, int theta,int width,int height)
 
 
 
-void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img,const int diag_size)
+void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_horizontals, int* size_verticals,int w, int h, char* img,const int diag_size,int type)
 {
 	SDL_Window* window = SDL_CreateWindow("Debug GetLines",0,0,w,h,SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	SDL_SetRenderDrawColor(renderer,238,130,238,255);
 	SDL_Texture* texture = IMG_LoadTexture(renderer,img);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
-	for (int i=0; i<(*size_horizontals); i++)
+	if (type == 0)
 	{
-		int p = horizontals[i].rho;
-		int t = horizontals[i].theta;
-		printf("%d %d \n", p,t);
-		drawLine(renderer,p,t,w,h);
-
+		for (int i=0; i<(*size_horizontals); i++)
+		{
+			int p = horizontals[i].rho;
+			int t = horizontals[i].theta;
+			drawLine(renderer,p,t,w,h);
+		}
+	}
+	else
+	{
+		for (int i=0; i<(*size_verticals); i++)
+		{
+			int p = horizontals[i].rho;
+			int t= horizontals[i].theta;
+			drawLine(renderer,p,t,w,h);
+		}
 	}
 	SDL_RenderPresent(renderer);
 	SDL_Event event;
@@ -132,7 +142,7 @@ void Debug_GetLines(struct Line* horizontals, struct Line* verticals, int* size_
 void GetLines(int* mat, const int diag_size, int max, struct Line** horizontals, struct Line** verticals,int* size_horizontals, int* size_verticals)
 {
 	int thresold = max * 0.4;
-	int thresold_horizon = 90;
+	int thresold_horizon = 6;
 	for (int p=0; p<=diag_size*2; p++)
 	{
 		for (int t=0; t<=180; t++)
@@ -141,17 +151,19 @@ void GetLines(int* mat, const int diag_size, int max, struct Line** horizontals,
 			{
 				int real_p = p-diag_size;
 				int real_t = t-90;
-				//if (abs(real_t) <= thresold_horizon) //Horizontals Lines
-				//{
-						*size_horizontals = *size_horizontals + 1;
-						*horizontals = realloc(*horizontals,*(size_horizontals)*sizeof(struct Line));
+				if (abs(real_t) > thresold_horizon) //Horizontals Lines
+				{
 						struct Line to_save = {real_p, real_t};
-						(*horizontals)[*size_horizontals-1] = to_save;
-				//}
-			}
-				//if (fabs(t-90-CV_PI/2) < ang
+						Insert_Sort(horizontals, size_horizontals, &to_save);
+				}
+				if (abs(real_t) <= thresold_horizon) //Verticals Lines
+				{
+					struct Line to_save = {real_p, real_t};
+					Insert_Sort(verticals, size_verticals, &to_save);
+				}
 			}
 		}
+	}
 }
 
 void GetIntersec()

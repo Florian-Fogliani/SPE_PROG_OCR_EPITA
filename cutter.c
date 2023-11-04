@@ -14,7 +14,7 @@ SDL_Surface* load_image(const char* path)
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
 	    return EXIT_FAILURE;
     }
@@ -33,12 +33,19 @@ int main(int argc, char** argv)
     const int diag_size = (int)Calculate_Diagonal(surface);
     int* mat = Init_Mat(diag_size);
     int max = Fill_Mat(surface,mat,diag_size);
+    if (argv[2] == "debug")
+    {
+	    Debug(mat, diag_size, argv[1], surface->w, surface->h, max);
+    }
+    int type_debug = 0;
+    if (argv[2] == "vertical")
+    {
+	    type_debug = 1;
+    }
     struct Line* horizontals = malloc(sizeof(struct Line));
     struct Line* verticals = malloc(sizeof(struct Line));
     int size_horizontals=1;
     int size_verticals=1;
     GetLines(mat,diag_size,max, &horizontals, &verticals,&size_horizontals,&size_verticals);
-    //Debug(mat, diag_size,argv[1], surface->w, surface->h, max);
-    Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,surface->w,surface->h, argv[1],diag_size);
-   Debug(mat, diag_size,argv[1],surface->w,surface->h,max);
+    Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,surface->w,surface->h, argv[1],diag_size,type_debug);
 }
