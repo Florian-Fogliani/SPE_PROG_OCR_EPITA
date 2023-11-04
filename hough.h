@@ -28,5 +28,11 @@ void GetLines(int* mat, const int diag_size,int max,
         struct Line** horizontals, struct Line** verticals, 
         int* size_horizontals, int* size_verticals);
 void Insert_Sort(struct Line** tab, int* len, struct Line* line);
-
+struct Point GetIntersec(int p1, int o1, int p2, int o2);
+void SaveCas
+(SDL_Surface* img,int nb_l, int nb_col, 
+ struct Point bord_up, struct Point bord_down);
+void Cut(struct Line** horizontals, struct Line ** verticals, 
+        int* size_h, int* size_v,SDL_Surface* img);
+struct Line* get_10_lines(struct Line* tab, int len, int threshold);
 #endif 
