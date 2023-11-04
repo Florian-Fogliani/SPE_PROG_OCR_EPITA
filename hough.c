@@ -166,6 +166,22 @@ void GetLines(int* mat, const int diag_size, int max, struct Line** horizontals,
 	}
 }
 
+void insert_sort(struct Line** tab, size_t* len, struct Line* line)
+{
+    size_t i = 0;
+    while (i < *len && line->rho > (*tab + i)->rho)
+        i++;
+    (*len)++;
+    *tab = realloc(*tab, (*len)  * sizeof(struct Line));
+    size_t index = i;
+    i = (*len) - 1;;
+    while (i > index)
+    {
+        (*tab + i)->rho = (*tab + i - 1)->rho;
+        i--;
+    }
+    (*tab)[index] = *line;
+}
 void GetIntersec()
 {
 
