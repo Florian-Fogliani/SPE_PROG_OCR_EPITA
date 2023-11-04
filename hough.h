@@ -35,4 +35,6 @@ void SaveCas
 void Cut(struct Line** horizontals, struct Line ** verticals, 
         int* size_h, int* size_v,SDL_Surface* img);
 struct Line* get_10_lines(struct Line* tab, int len, int threshold);
+struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
+        int i)
 #endif 
