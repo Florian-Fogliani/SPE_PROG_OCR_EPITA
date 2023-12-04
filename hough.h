@@ -38,4 +38,6 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold);
 struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
         int i);
 void CutFinale(SDL_Surface* img);
+void Free_Lines(struct Line* h, struct Line* v);
+void Free_Mat(int* mat);
 #endif 

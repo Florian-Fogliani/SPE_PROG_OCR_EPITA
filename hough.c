@@ -12,9 +12,15 @@ int* Init_Mat(const int R)
 	return res;
 }
 
-void Free_Mat(char* mat)
+void Free_Mat(int* mat)
 {
 	free(mat);
+}
+
+void Free_Lines(struct Line* h, struct Line* v)
+{
+	free(h);
+	free(v);
 }
 
 int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
@@ -32,8 +38,8 @@ int Fill_Mat(SDL_Surface* img, int* mat, const int diag_size)
 			{
 				for (int theta = -90; theta<=90; theta++)
 				{
-					int p = (int)(w*cos(theta * M_PI / 180) 
-                            + h*sin(theta * M_PI/180));
+					int p = (int)(w*cos((theta) * M_PI / 180) 
+                            + h*sin((theta) * M_PI/180));
 					mat[(p+diag_size)*(180)+(theta+90)] += 1;
 					if (mat[(p+diag_size)*(180)+(theta+90)] > max)
 					{
@@ -242,12 +248,28 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     {
         printf("Erreur Hori");
     }
-    int x1 = ver[0].rho; 
-    int y1 = img->h + hor[0].rho;
+    int x1 = ver[0].rho;
+    int y1 = hor[0].rho;
+    if (hor[0].rho < 0)
+    {
+	    y1 = img->h + hor[0].rho;
+    }
+    else
+    {
+	    y1 = hor[0].rho;
+    }
     int x2 = ver[9].rho;
-    int y2 = img->h + hor[9].rho;
-
-    
+    int y2 = hor[9].rho;
+    if (hor[9].rho < 0)
+     {
+	     y2 = img->h + hor[9].rho;
+     }
+    else
+    {
+	    y2 = hor[9].rho;
+    }
+    if (y2>img->h) y2=img->h;
+    if (x2>img->w) x2=img->w;
     struct Point up = {x1,y1};
     struct Point down = {x2,y2};
     SaveCas(img,0,0,up,down);
