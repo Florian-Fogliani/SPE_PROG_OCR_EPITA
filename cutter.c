@@ -67,8 +67,8 @@ int main(int argc, char** argv)
 	    const int diag_size = (int)Calculate_Diagonal(surface);
 	    int* mat = Init_Mat(diag_size);
 	    int max = Fill_Mat(surface,mat,diag_size);
-	    struct Line* horizontals = malloc(sizeof(struct Line));
-	    struct Line* verticals = malloc(sizeof(struct Line));
+	    struct Line* horizontals = calloc(1,sizeof(struct Line));
+	    struct Line* verticals = calloc(1,sizeof(struct Line));
 	    int size_h=0;
 	    int size_v=0;
 	    GetLines
@@ -101,8 +101,8 @@ int main(int argc, char** argv)
 		type_debug=0;
 	}
 	else{return 1;}
-    	struct Line* horizontals = malloc(sizeof(struct Line));
-    	struct Line* verticals = malloc(sizeof(struct Line));
+    	struct Line* horizontals = calloc(1,sizeof(struct Line));
+    	struct Line* verticals = calloc(1,sizeof(struct Line));
     	int size_h=1;
     	int size_v=1;
     	GetLines
@@ -113,9 +113,24 @@ int main(int argc, char** argv)
 	int sh = 10;
 	int sv = 10;
 	if (h==NULL || v==NULL) printf("ERROR");
-    	Debug_GetLines(h,v,&sh,&sv,
+
+    printf("================ VERTICALS ==================  \n");
+    print_param(v,sv);
+    printf("================ HORIZONTALS ================ \n");
+    print_param(h,sh);
+    Debug_GetLines(h,v,&sh,&sv,
                 surface->w,surface->h, argv[1],type_debug);
     }
     }
     return 0;
+}
+
+void print_param(struct Line* l, int s)
+{
+    int i=0;
+    while (i<s)
+    {
+        printf("Rho %i, Theta %i \n", l[i].rho, l[i].theta);
+        i++;
+    }
 }

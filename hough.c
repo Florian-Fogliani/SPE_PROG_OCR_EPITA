@@ -199,8 +199,9 @@ void GetLines
 			{
 				int real_p = p-diag_size;
 				int real_t = t-90;
-				if (abs(real_t) > thresold_horizon) //Horizontals Lines
+				if (abs(real_t) > thresold_horizon && abs(real_t)<130) //Horizontals Lines
 				{
+                    //printf("%i \n",real_t);
 						struct Line to_save = {real_p, real_t};
 						Insert_Sort(horizontals, size_horizontals, &to_save);
 				}
@@ -276,6 +277,35 @@ void SaveCas
 	int y1 = bord_up.y;
 	int x2 = bord_down.x;
 	int y2 = bord_down.y;
+    Uint32* p = img->pixels;
+    int choice=1;
+    while (x2-x1 != 28)
+    {
+        if (choice)
+        {
+            x1++;
+            choice = 0;
+        }
+        else
+        {
+            x2--;
+            choice=1;
+        }
+    }
+    choice=1;
+    while(y2-y1 != 28)
+    {
+        if (choice)
+        {
+            y1++;
+            choice=0;
+        }
+        else
+        {
+            y2--;
+            choice=1;
+        }
+    }
 	int largeur = x2-x1;
 	int hauteur = y2-y1;
 	SDL_Rect rect;
@@ -283,7 +313,7 @@ void SaveCas
 	rect.y = y1;
 	rect.w = largeur;
 	rect.h = hauteur;
-	SDL_Surface* capture = SDL_CreateRGBSurface(0,28,28,32,0,0,0,0);
+	SDL_Surface* capture = SDL_CreateRGBSurface(0,largeur,hauteur,32,0,0,0,0);
 	char name[20];
 	sprintf(name,"mat_%d_%d",nb_l,nb_col);
 	SDL_BlitScaled(img,&rect,capture,NULL);
@@ -349,12 +379,18 @@ void CutFinale(SDL_Surface* img)
 struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
         int i)
 {
-        struct Line* ten = malloc(1);
+        struct Line* ten = calloc(1,sizeof(struct Line));
         
         int a = i;
         int b = a + 1;
         int n = 0;
         int diff = tab[b].rho - tab[a].rho;
+
+        while (diff <= 20)
+        {
+            b++;
+            diff = tab[b].rho - tab[a].rho;
+        }
 
         while (b < len && ref - diff >= -threshold)
         {
