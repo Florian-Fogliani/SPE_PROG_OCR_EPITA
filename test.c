@@ -10,14 +10,10 @@ typedef struct {
     uint8_t* data; // Tableau unidimensionnel représentant les pixels (chaque composant de pixel consécutif : R, G, B, etc.)
 } Image;
 
-
-
-// Fonction de base cubique
 float cubic(float t) {
     return t * t * (3.0 - 2.0 * t);
 }
 
-// Interpolation bicubique
 float bicubicInterpolation(float p[4], float x) {
     return p[1] +
            0.5 * x * (p[2] - p[0] +
@@ -25,7 +21,6 @@ float bicubicInterpolation(float p[4], float x) {
                            x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
 }
 
-// Redimensionnement bicubique avec SDL
 void resizeBicubicSDL(const SDL_Surface* src, int newWidth, int newHeight, SDL_Surface* dst) {
     float scale_x = (float)(src->w - 1) / newWidth;
     float scale_y = (float)(src->h - 1) / newHeight;
@@ -47,7 +42,6 @@ void resizeBicubicSDL(const SDL_Surface* src, int newWidth, int newHeight, SDL_S
             float dx = srcX - (float)x0;
             float dy = srcY - (float)y0;
 
-            // Bicubic interpolation for each color channel (R, G, B)
             for (int c = 0; c < 3; c++) {
                 float values[4];
                 for (int i = 0; i < 4; i++) {
@@ -68,7 +62,6 @@ void resizeBicubicSDL(const SDL_Surface* src, int newWidth, int newHeight, SDL_S
     }
 }
 
-// Charger une image avec SDL_Image
 SDL_Surface* loadImage(const char* filename) {
     SDL_Surface* image = IMG_Load(filename);
     if (!image) {
@@ -78,7 +71,6 @@ SDL_Surface* loadImage(const char* filename) {
     return image;
 }
 
-// Libérer la mémoire allouée pour l'image
 void freeImageSDL(SDL_Surface* img) {
     SDL_FreeSurface(img);
 }
@@ -95,14 +87,11 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    // Charger votre image
-    SDL_Surface* src = IMG_Load("mat_1_1.png");
-    SDL_Surface* srcImage = SDL_ConvertSurfaceFormat(src,SDL_PIXELFORMAT_RGB888,0);
+    SDL_Surface* srcImage = loadImage("example.png");
 
     int newWidth = 260;
     int newHeight = 260;
 
-    // Créer une nouvelle surface pour l'image redimensionnée
     SDL_Surface* resizedImage = SDL_CreateRGBSurface(0, newWidth, newHeight,
                                                     srcImage->format->BitsPerPixel,
                                                     0xFF000000,
@@ -110,10 +99,8 @@ int main() {
                                                     0x0000FF00,
                                                     0x000000FF);
 
-    // Redimensionner l'image avec l'interpolation bicubique
     resizeBicubicSDL(srcImage, newWidth, newHeight, resizedImage);
 
-    // Créer une fenêtre SDL pour afficher les deux images (originale et redimensionnée)
     SDL_Window* window = SDL_CreateWindow("SDL Bicubic Resize Example",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -139,10 +126,8 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    // Charger la surface redimensionnée dans une texture pour l'afficher
     SDL_Texture* resizedTexture = SDL_CreateTextureFromSurface(renderer, resizedImage);
 
-    // Boucle principale
     int quit = 0;
     while (!quit) {
         SDL_Event e;
@@ -152,23 +137,18 @@ int main() {
             }
         }
 
-        // Effacer l'écran
         SDL_RenderClear(renderer);
 
-        // Afficher l'image originale à gauche
         SDL_Rect srcRect = { 0, 0, srcImage->w, srcImage->h };
         SDL_Rect dstRect = { 0, 0, srcImage->w, srcImage->h };
         SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, srcImage), &srcRect, &dstRect);
 
-        // Afficher l'image redimensionnée à droite
         dstRect.x = srcImage->w;
         SDL_RenderCopy(renderer, resizedTexture, NULL, &dstRect);
 
-        // Mettre à jour l'affichage
         SDL_RenderPresent(renderer);
     }
 
-    // Libérer les ressources
     SDL_DestroyTexture(resizedTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
