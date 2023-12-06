@@ -46,6 +46,6 @@ void resizeImage(const char* inputFileName, const char* outputFileName, int newW
 }
 
 int main() {
-    resizeImage("mat_1_1", "mat_1_1_resized.png", 28, 28);
+    resizeImage("testeu", "resized.png", 252, 252);
     return 0;
 }
