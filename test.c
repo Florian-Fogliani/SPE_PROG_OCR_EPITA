@@ -42,6 +42,16 @@ void resizeBicubicSDL(const SDL_Surface* src, int newWidth, int newHeight, SDL_S
             float dx = srcX - (float)x0;
             float dy = srcY - (float)y0;
 
+            // Make sure indices are within bounds
+            x0 = (x0 < 0) ? 0 : (x0 >= src->w) ? src->w - 1 : x0;
+            x1 = (x1 < 0) ? 0 : (x1 >= src->w) ? src->w - 1 : x1;
+            x2 = (x2 < 0) ? 0 : (x2 >= src->w) ? src->w - 1 : x2;
+            x3 = (x3 < 0) ? 0 : (x3 >= src->w) ? src->w - 1 : x3;
+            y0 = (y0 < 0) ? 0 : (y0 >= src->h) ? src->h - 1 : y0;
+            y1 = (y1 < 0) ? 0 : (y1 >= src->h) ? src->h - 1 : y1;
+            y2 = (y2 < 0) ? 0 : (y2 >= src->h) ? src->h - 1 : y2;
+            y3 = (y3 < 0) ? 0 : (y3 >= src->h) ? src->h - 1 : y3;
+
             for (int c = 0; c < 3; c++) {
                 float values[4];
                 for (int i = 0; i < 4; i++) {
