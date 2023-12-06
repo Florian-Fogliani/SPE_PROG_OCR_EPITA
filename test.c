@@ -10,6 +10,8 @@ typedef struct {
     uint8_t* data; // Tableau unidimensionnel représentant les pixels (chaque composant de pixel consécutif : R, G, B, etc.)
 } Image;
 
+
+
 // Fonction de base cubique
 float cubic(float t) {
     return t * t * (3.0 - 2.0 * t);
@@ -94,7 +96,8 @@ int main() {
     }
 
     // Charger votre image
-    SDL_Surface* srcImage = loadImage("example.png");
+    SDL_Surface* src = IMG_Load("mat_1_1.png");
+    SDL_Surface* srcImage = SDL_ConvertSurfaceFormat(src,SDL_PIXELFORMAT_RGB888,0);
 
     int newWidth = 260;
     int newHeight = 260;

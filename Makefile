@@ -9,12 +9,13 @@ EXE = ${SRC:.c=}
 
 
 
-all : cutter 
+all : cutter test
 
 clean : 
 	${RM} ${OBJ}
 	${RM] ${EXE}
 	
 cutter : cutter.c hough.c
+test : test.c
 
 .PHONY : clean all
