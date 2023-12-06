@@ -32,6 +32,9 @@ struct Point GetIntersec(int p1, int o1, int p2, int o2);
 void SaveCas
 (SDL_Surface* img,int nb_l, int nb_col, 
  struct Point bord_up, struct Point bord_down);
+void SaveGrid
+(SDL_Surface* img,int nb_l, int nb_col,
+ struct Point bord_up, struct Point bord_down);
 void Cut(struct Line** horizontals, struct Line ** verticals, 
         int* size_h, int* size_v,SDL_Surface* img);
 struct Line* get_10_lines(struct Line* tab, int len, int threshold);

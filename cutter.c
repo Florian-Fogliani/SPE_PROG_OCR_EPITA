@@ -1,6 +1,8 @@
 #include "hough.h"
 #include "stdlib.h"
 #include <err.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 SDL_Surface* load_image(const char* path)
 {
@@ -14,6 +16,42 @@ SDL_Surface* load_image(const char* path)
 
 int main(int argc, char** argv)
 {
+	if (strcmp(argv[1],"clean")==0)
+	{
+		char path[1024];
+		getcwd(path,sizeof(path));
+		pid_t pid=fork();
+		if (pid==0)
+		{
+			char nb[]={'/','m','a','t','_',48,'_',48,'\0'};
+			char* arg[] = {"rm",strcat(path,nb),NULL};
+			execvp("rm",arg);
+			return 0;
+		}
+		else
+		{
+			wait(NULL);
+		}
+		for (int i=1;i<=9;i++)
+		{
+			for (int y=1;y<=9;y++)
+			{
+				pid_t pid=fork();
+				if(pid==0)
+				{
+					char nb[]={'/','m','a','t','_',i+48,'_',y+48,'\0'};
+					char* arg[] = {"rm",strcat(path,nb),NULL};
+					execvp("rm",arg);
+					return 0;
+				}
+				else if (pid>0)
+				{
+					wait(NULL);
+				}
+			}
+		}
+		return 0;
+	}
 	if (SDL_Init(SDL_INIT_VIDEO) !=0)
 	{
 		errx(EXIT_FAILURE,"%s",SDL_GetError());
@@ -54,7 +92,7 @@ int main(int argc, char** argv)
     else
     {
     	int type_debug = 0;
-    	if (strcmp(argv[2],"vertical")==0)
+    	if (strcmp(argv[2],"verticals")==0)
     	{
 		    type_debug = 1;
     	}
@@ -65,12 +103,17 @@ int main(int argc, char** argv)
 	else{return 1;}
     	struct Line* horizontals = malloc(sizeof(struct Line));
     	struct Line* verticals = malloc(sizeof(struct Line));
-    	int size_horizontals=1;
-    	int size_verticals=1;
+    	int size_h=1;
+    	int size_v=1;
     	GetLines
             (mat,diag_size,max, &horizontals, &verticals,
-             &size_horizontals,&size_verticals);
-    	Debug_GetLines(horizontals,verticals,&size_horizontals,&size_verticals,
+             &size_h,&size_v);
+	struct Line* h = get_10_lines(horizontals,size_h,10);
+	struct Line* v = get_10_lines(verticals,size_v,10);
+	int sh = 10;
+	int sv = 10;
+	if (h==NULL || v==NULL) printf("ERROR");
+    	Debug_GetLines(h,v,&sh,&sv,
                 surface->w,surface->h, argv[1],type_debug);
     }
     }
