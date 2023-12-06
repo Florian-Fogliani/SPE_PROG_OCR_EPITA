@@ -87,7 +87,7 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    SDL_Surface* srcImage = loadImage("example.png");
+    SDL_Surface* srcImage = loadImage("mat_1_1");
 
     int newWidth = 260;
     int newHeight = 260;
