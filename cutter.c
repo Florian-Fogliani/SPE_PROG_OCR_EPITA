@@ -69,8 +69,8 @@ int main(int argc, char** argv)
 	    int max = Fill_Mat(surface,mat,diag_size);
 	    struct Line* horizontals = calloc(1,sizeof(struct Line));
 	    struct Line* verticals = calloc(1,sizeof(struct Line));
-	    int size_h=0;
-	    int size_v=0;
+	    int size_h=1;
+	    int size_v=1;
 	    GetLines
 		    (mat, diag_size,max,&horizontals, &verticals,
 		     &size_h, &size_v);

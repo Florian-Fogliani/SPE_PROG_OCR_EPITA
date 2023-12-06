@@ -277,7 +277,7 @@ void SaveCas
 	int y1 = bord_up.y;
 	int x2 = bord_down.x;
 	int y2 = bord_down.y;
-    Uint32* p = img->pixels;
+    /*Uint32* p = img->pixels;
     int choice=1;
     while (x2-x1 != 28)
     {
@@ -305,7 +305,7 @@ void SaveCas
             y2--;
             choice=1;
         }
-    }
+    }*/
 	int largeur = x2-x1;
 	int hauteur = y2-y1;
 	SDL_Rect rect;
@@ -316,7 +316,7 @@ void SaveCas
 	SDL_Surface* capture = SDL_CreateRGBSurface(0,largeur,hauteur,32,0,0,0,0);
 	char name[20];
 	sprintf(name,"mat_%d_%d",nb_l,nb_col);
-	SDL_BlitScaled(img,&rect,capture,NULL);
+	SDL_BlitSurface(img,&rect,capture,NULL);
 	IMG_SavePNG(capture,name);
 	SDL_FreeSurface(capture);
 }
@@ -363,17 +363,24 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
 }
 void CutFinale(SDL_Surface* img)
 {
-    int step = img->w/9;
-    for (int y=0; y<img->w-step; y+=step)
+    int step_w = img->w/9;
+    int step_h = img->h/9;
+    int a=0;
+    int b=0;
+    for (int y=0; y<=img->h-step_h; y+=step_h)
     {
-        for (int x=0; x<img->w-step; x+=step)
+        for (int x=0; x<=img->w-step_w; x+=step_w)
         {
             struct Point up = {x,y};
-            struct Point down = {x+step,y+step};
-            SaveCas(img,y%9+1,x%9+1,up,down);
-            
+            struct Point down = {x+step_w-1,y+step_h-1};
+            SaveCas(img,a+1,b+1,up,down);
+            b++;     
         }
+        a++;
+        b=0;
     }
+    printf("Largeur : %i \n",img->w);
+    printf("Step : %i \n",step_w);
 
 }
 struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
