@@ -105,10 +105,10 @@ int main() {
     // Créer une nouvelle surface pour l'image redimensionnée
     SDL_Surface* resizedImage = SDL_CreateRGBSurface(0, newWidth, newHeight,
                                                     srcImage->format->BitsPerPixel,
-                                                    srcImage->format->Rmask,
-                                                    srcImage->format->Gmask,
-                                                    srcImage->format->Bmask,
-                                                    srcImage->format->Amask);
+                                                    0xFF000000,
+                                                    0x00FF0000,
+                                                    0x0000FF00,
+                                                    0x000000FF);
 
     // Redimensionner l'image avec l'interpolation bicubique
     resizeBicubicSDL(srcImage, newWidth, newHeight, resizedImage);
