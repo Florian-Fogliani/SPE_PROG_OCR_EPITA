@@ -5,6 +5,31 @@
 #include <math.h>
 #include <stdlib.h>
 
+void invertColors(SDL_Surface* surface) {
+    if (surface == NULL) {
+        fprintf(stderr, "Surface is NULL\n");
+        return;
+    }
+
+    SDL_LockSurface(surface);
+
+    for (int y = 0; y < surface->h; y++) {
+        for (int x = 0; x < surface->w; x++) {
+            Uint32 pixel = *((Uint32*)surface->pixels + y * surface->pitch / 4 + x);
+            Uint8 r, g, b, a;
+
+            SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
+
+            r = 255 - r;
+            g = 255 - g;
+            b = 255 - b;
+
+            *((Uint32*)surface->pixels + y * surface->pitch / 4 + x) = SDL_MapRGBA(surface->format, r, g, b, a);
+        }
+    }
+
+    SDL_UnlockSurface(surface);
+}
 
 int Get_Rot(int* mat, int max,const int diag_size)
 {
