@@ -187,9 +187,9 @@ void Debug_GetLines
 void GetLines
 (int* mat,int diag_size, int max, 
  struct Line** horizontals, struct Line** verticals,
- int* size_horizontals, int* size_verticals)
+ int* size_horizontals, int* size_verticals,SDL_Surface* img)
 {
-	int thresold = max * 0.6;
+	int thresold = max * 0.65;
 	int thresold_horizon = 5;
 	for (int p=0; p<=diag_size*2; p++)
 	{
@@ -199,7 +199,7 @@ void GetLines
 			{
 				int real_p = p-diag_size;
 				int real_t = t-90;
-				if (abs(real_t) > thresold_horizon && abs(real_t)<130) //Horizontals Lines
+				if (abs(real_t) > thresold_horizon && abs(real_t)<130 && real_p+img->h > 10) //Horizontals Lines
 				{
                     //printf("%i \n",real_t);
 						struct Line to_save = {real_p, real_t};
@@ -357,7 +357,7 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     }
     if (y2>img->h) y2=img->h;
     if (x2>img->w) x2=img->w;
-    struct Point up = {x1,y1};
+    struct Point up = {x1,y1+22};
     struct Point down = {x2,y2};
     SaveGrid(img,0,0,up,down);
 }

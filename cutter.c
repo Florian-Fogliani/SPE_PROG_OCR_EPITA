@@ -64,21 +64,22 @@ int main(int argc, char** argv)
 
     if (argc == 2)
     {
-	    const int diag_size = (int)Calculate_Diagonal(surface);
-	    int* mat = Init_Mat(diag_size);
-	    int max = Fill_Mat(surface,mat,diag_size);
+	    int diag_size = (int)Calculate_Diagonal(surface);
+	    int* mat = Init_Mat((const int)diag_size);
+	    int max = Fill_Mat(surface,mat,(const int)diag_size);
 	    struct Line* horizontals = calloc(1,sizeof(struct Line));
 	    struct Line* verticals = calloc(1,sizeof(struct Line));
 	    int size_h=1;
 	    int size_v=1;
 	    GetLines
 		    (mat, diag_size,max,&horizontals, &verticals,
-		     &size_h, &size_v);
+		     &size_h, &size_v,surface);
 	    Cut(&horizontals,&verticals,&size_h,&size_v,surface);
 	    SDL_Surface* to_cut = load_image("mat_0_0");
 	    CutFinale(to_cut);
 	    Free_Mat(mat);
 	    Free_Lines(horizontals,verticals);
+                
     }
     else
     {
@@ -107,7 +108,7 @@ int main(int argc, char** argv)
     	int size_v=1;
     	GetLines
             (mat,diag_size,max, &horizontals, &verticals,
-             &size_h,&size_v);
+             &size_h,&size_v,surface);
 	struct Line* h = get_10_lines(horizontals,size_h,10);
 	struct Line* v = get_10_lines(verticals,size_v,10);
 	int sh = 10;

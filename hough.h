@@ -26,7 +26,7 @@ void Debug_GetLines
  int* size_horizontals, int* size_verticals, int w,int h, char* img, int type);
 void GetLines(int* mat, const int diag_size,int max, 
         struct Line** horizontals, struct Line** verticals, 
-        int* size_horizontals, int* size_verticals);
+        int* size_horizontals, int* size_verticals,SDL_Surface* img);
 void Insert_Sort(struct Line** tab, int* len, struct Line* line);
 struct Point GetIntersec(int p1, int o1, int p2, int o2);
 void SaveCas
