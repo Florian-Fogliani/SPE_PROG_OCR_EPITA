@@ -388,23 +388,30 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
 }
 void CutFinale(SDL_Surface* img)
 {
-    int step_w = img->w/9;
-    int step_h = img->h/9;
+    invertColors(img);
+    //SDL_Surface* imgf = SDL_CreateRGBSurface(0,252,252,32,img->format->Rmask,
+            //img->format->Gmask,img->format->Bmask
+            //,img->format->Amask);
+    //SDL_Rect rect = {0,0,252,252};
+    //SDL_BlitSurface(img,NULL,imgf,&rect);
+    SDL_Surface* imgf=img;
+    int step_w = imgf->w/9;
+    int step_h = imgf->h/9;
     int a=0;
     int b=0;
-    for (int y=0; y<=img->h-step_h; y+=step_h)
+    for (int y=0; y<=imgf->h-step_h; y+=step_h)
     {
-        for (int x=0; x<=img->w-step_w; x+=step_w)
+        for (int x=0; x<=imgf->w-step_w; x+=step_w)
         {
             struct Point up = {x,y};
             struct Point down = {x+step_w-1,y+step_h-1};
-            SaveCas(img,a+1,b+1,up,down);
+            SaveCas(imgf,a+1,b+1,up,down);
             b++;     
         }
         a++;
         b=0;
     }
-    printf("Largeur : %i \n",img->w);
+    printf("Largeur : %i \n",imgf->w);
     printf("Step : %i \n",step_w);
 
 }
