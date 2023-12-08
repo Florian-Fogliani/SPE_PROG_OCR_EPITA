@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 	    GetLines
 		    (mat, diag_size,max,&horizontals, &verticals,
 		     &size_h, &size_v,surface);
-	    SDL_Surface* to_cut = load_image("to_cut.png");
+	    SDL_Surface* to_cut = load_image("hard.png");
 	    Cut(&horizontals,&verticals,&size_h,&size_v,to_cut);
 	    SDL_Surface* loaded = load_image("mat_0_0");
 	    to_cut = SDL_CreateRGBSurface(0,252,252,
