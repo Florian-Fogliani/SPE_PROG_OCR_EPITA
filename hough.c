@@ -16,26 +16,34 @@ SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
     SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
     return result;
 }*/
-SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
-    // Créez une nouvelle SDL_Surface pour contenir l'image zoomée
-    SDL_Surface* zoomedSurface = SDL_CreateRGBSurface(0, imgSurface->w, imgSurface->h, 32, 0, 0, 0, 0);
+SDL_Surface* zoomImage(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
+    // Définissez la taille du rect en fonction du facteur de zoom
+    int zoomedWidth = imgSurface->w / zoomFactor;
+    int zoomedHeight = imgSurface->h / zoomFactor;
 
-    // Préparez le rectangle de source et de destination pour SDL_BlitScaled
-    SDL_Rect sourceRect, destRect; 
-    sourceRect.x = centerX - (imgSurface->w * zoomFactor) / 2;
-    sourceRect.y = centerY - (imgSurface->h * zoomFactor) / 2;
-    sourceRect.w = imgSurface->w * zoomFactor;
-    sourceRect.h = imgSurface->h * zoomFactor;
+    // Créez une nouvelle SDL_Surface pour contenir la portion zoomée de l'image
+    SDL_Surface* zoomedSurface = SDL_CreateRGBSurface(0, zoomedWidth, zoomedHeight, 32, 0, 0, 0, 0);
 
-    destRect.x = 0;
-    destRect.y = 0;
-    destRect.w = zoomedSurface->w;
-    destRect.h = zoomedSurface->h;
+    // Préparez le rectangle de source pour SDL_BlitSurface
+    SDL_Rect sourceRect; 
+    sourceRect.x = centerX - zoomedWidth / 2;
+    sourceRect.y = centerY - zoomedHeight / 2;
+    sourceRect.w = zoomedWidth;
+    sourceRect.h = zoomedHeight;
 
-    // Appliquer le zoom à l'image
-    SDL_BlitScaled(imgSurface, &sourceRect, zoomedSurface, &destRect);
+    // Copier la portion de l'image
+    SDL_BlitSurface(imgSurface, &sourceRect, zoomedSurface, NULL);
 
-    return zoomedSurface;
+    // Créez une nouvelle SDL_Surface pour contenir l'image à l'échelle finale de 28x28
+    SDL_Surface* finalSurface = SDL_CreateRGBSurface(0, 28, 28, 32, 0, 0, 0, 0);
+
+    // Appliquer la mise à l'échelle à l'image
+    SDL_BlitScaled(zoomedSurface, NULL, finalSurface, NULL);
+
+    // Libérer la surface zoomée
+    SDL_FreeSurface(zoomedSurface);
+
+    return finalSurface;
 }
 
 void invertColors(SDL_Surface* surface) {
