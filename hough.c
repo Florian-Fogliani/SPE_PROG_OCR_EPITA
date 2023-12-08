@@ -16,6 +16,27 @@ SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
     SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
     return result;
 }*/
+SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
+    // Créez une nouvelle SDL_Surface pour contenir l'image zoomée
+    SDL_Surface* zoomedSurface = SDL_CreateRGBSurface(0, imgSurface->w * zoomFactor, imgSurface->h * zoomFactor, 32, 0, 0, 0, 0);
+
+    // Préparez le rectangle de source et de destination pour SDL_BlitScaled
+    SDL_Rect sourceRect, destRect; 
+    sourceRect.x = centerX - (imgSurface->w * zoomFactor) / 2;
+    sourceRect.y = centerY - (imgSurface->h * zoomFactor) / 2;
+    sourceRect.w = imgSurface->w * zoomFactor;
+    sourceRect.h = imgSurface->h * zoomFactor;
+
+    destRect.x = 0;
+    destRect.y = 0;
+    destRect.w = zoomedSurface->w;
+    destRect.h = zoomedSurface->h;
+
+    // Appliquer le zoom à l'image
+    SDL_BlitScaled(imgSurface, &sourceRect, zoomedSurface, &destRect);
+
+    return zoomedSurface;
+}
 
 void invertColors(SDL_Surface* surface) {
     if (surface == NULL) {
@@ -364,7 +385,7 @@ void SaveCas
 	sprintf(name,"mat_%d_%d.png",nb_l,nb_col);
 	SDL_BlitSurface(img,&rect,capture,NULL);
 	//invertColors(capture);
-    capture = zoom(capture,0.7);
+    capture = zoom(capture,0.7,capture->w/2,0);
 	IMG_SavePNG(capture,name);
 	SDL_FreeSurface(capture);
 }
