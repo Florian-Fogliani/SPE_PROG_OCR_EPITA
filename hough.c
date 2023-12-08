@@ -20,9 +20,18 @@ void invertColors(SDL_Surface* surface) {
 
             SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
 
-            r = 255 - r;
-            g = 255 - g;
-            b = 255 - b;
+	    if (r>128 && g>128 && b>128)
+	    {
+		    r=0;
+		    g=0;
+		    b=0;
+	    }
+	    else
+	    {
+            	r = 255;
+            	g = 255;
+            	b = 255;
+	    }
 
             *((Uint32*)surface->pixels + y * surface->pitch / 4 + x) = SDL_MapRGBA(surface->format, r, g, b, a);
         }
@@ -340,8 +349,9 @@ void SaveCas
 	rect.h = hauteur;
 	SDL_Surface* capture = SDL_CreateRGBSurface(0,largeur,hauteur,32,0,0,0,0);
 	char name[20];
-	sprintf(name,"mat_%d_%d",nb_l,nb_col);
+	sprintf(name,"mat_%d_%d.png",nb_l,nb_col);
 	SDL_BlitSurface(img,&rect,capture,NULL);
+	invertColors(capture);
 	IMG_SavePNG(capture,name);
 	SDL_FreeSurface(capture);
 }
@@ -388,7 +398,6 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
 }
 void CutFinale(SDL_Surface* img)
 {
-    invertColors(img);
     //SDL_Surface* imgf = SDL_CreateRGBSurface(0,252,252,32,img->format->Rmask,
             //img->format->Gmask,img->format->Bmask
             //,img->format->Amask);
@@ -404,7 +413,7 @@ void CutFinale(SDL_Surface* img)
         for (int x=0; x<=imgf->w-step_w; x+=step_w)
         {
             struct Point up = {x,y};
-            struct Point down = {x+step_w-1,y+step_h-1};
+            struct Point down = {x+step_w,y+step_h};
             SaveCas(imgf,a+1,b+1,up,down);
             b++;     
         }

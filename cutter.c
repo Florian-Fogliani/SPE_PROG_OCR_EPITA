@@ -14,116 +14,81 @@ SDL_Surface* load_image(const char* path)
     return res;
 }
 
-int main(int argc, char** argv)
+
+void Clean()
 {
-	if (strcmp(argv[1],"clean")==0)
+	char path[1024];
+	getcwd(path,sizeof(path));
+	pid_t pid=fork();
+	if (pid==0)
 	{
-		char path[1024];
-		getcwd(path,sizeof(path));
-		pid_t pid=fork();
-		if (pid==0)
-		{
-			char nb[]={'/','m','a','t','_',48,'_',48,'\0'};
-			char* arg[] = {"rm",strcat(path,nb),NULL};
-			execvp("rm",arg);
-			return 0;
-		}
-		else
-		{
-			wait(NULL);
-		}
-		for (int i=1;i<=9;i++)
-		{
-			for (int y=1;y<=9;y++)
-			{
-				pid_t pid=fork();
-				if(pid==0)
-				{
-					char nb[]={'/','m','a','t','_',i+48,'_',y+48,'\0'};
-					char* arg[] = {"rm",strcat(path,nb),NULL};
-					execvp("rm",arg);
-					return 0;
-				}
-				else if (pid>0)
-				{
-					wait(NULL);
-				}
-			}
-		}
+		char nb[]={'/','m','a','t','_',48,'_',48,'\0'};
+		char* arg[] = {"rm",strcat(path,nb),NULL};
+		execvp("rm",arg);
 		return 0;
 	}
+	else
+	{
+		wait(NULL);
+	}
+	for (int i=1;i<=9;i++)
+	{
+		for (int y=1;y<=9;y++)
+		{
+			pid_t pid=fork();
+			if(pid==0)
+			{
+				char nb[]={'/','m','a','t','_',i+48,'_',y+48,'\0'};
+				char* arg[] = {"rm",strcat(path,nb),NULL};
+				execvp("rm",arg);
+				return 0;
+			}
+			else if (pid>0)
+			{
+				wait(NULL);
+			}
+		}
+	}
+}
+char* Cutter(char** argv)
+{
 	if (SDL_Init(SDL_INIT_VIDEO) !=0)
 	{
 		errx(EXIT_FAILURE,"%s",SDL_GetError());
 	}
-	SDL_Surface* surface = load_image(argv[1]);
+	SDL_Surface* to_analyze = load_image(argv[0]);
 	if (surface == NULL)
 	{
 		errx(EXIT_FAILURE, "%s",SDL_GetError());
 	}
 
-    if (argc == 2)
-    {
-	    int diag_size = (int)Calculate_Diagonal(surface);
-	    int* mat = Init_Mat((const int)diag_size);
-	    int max = Fill_Mat(surface,mat,(const int)diag_size);
-	    struct Line* horizontals = calloc(1,sizeof(struct Line));
-	    struct Line* verticals = calloc(1,sizeof(struct Line));
-	    int size_h=1;
-	    int size_v=1;
-	    GetLines
-		    (mat, diag_size,max,&horizontals, &verticals,
-		     &size_h, &size_v,surface);
-	    Cut(&horizontals,&verticals,&size_h,&size_v,surface);
-	    SDL_Surface* to_cut = load_image("mat_0_0");
-	    CutFinale(to_cut);
-	    Free_Mat(mat);
-	    Free_Lines(horizontals,verticals);
-                
-    }
-    else
-    {
-    const int diag_size = (int)Calculate_Diagonal(surface);
-    int* mat = Init_Mat(diag_size);
-    int max = Fill_Mat(surface,mat,diag_size);
-    if (strcmp(argv[2],"debug")==0)
-    {
-	    Debug(mat, diag_size, argv[1], surface->w, surface->h, max);
-    }
-    else
-    {
-    	int type_debug = 0;
-    	if (strcmp(argv[2],"verticals")==0)
-    	{
-		    type_debug = 1;
-    	}
-	else if (strcmp(argv[2],"horizontals")==0)
-	{
-		type_debug=0;
-	}
-	else{return 1;}
-    	struct Line* horizontals = calloc(1,sizeof(struct Line));
-    	struct Line* verticals = calloc(1,sizeof(struct Line));
-    	int size_h=1;
-    	int size_v=1;
-    	GetLines
-            (mat,diag_size,max, &horizontals, &verticals,
-             &size_h,&size_v,surface);
-	struct Line* h = get_10_lines(horizontals,size_h,10);
-	struct Line* v = get_10_lines(verticals,size_v,10);
-	int sh = 10;
-	int sv = 10;
-	if (h==NULL || v==NULL) printf("ERROR");
+	//HOUGH CALL
+	int diag_size = (int)Calculate_Diagonal(to_analyze);
+	int* mat = Init_Mat((const int)diag_size);
+	int max = Fill_Mat(to_analyze,mat,(const int)diag_size);
 
-    printf("================ VERTICALS ==================  \n");
-    print_param(v,sv);
-    printf("================ HORIZONTALS ================ \n");
-    print_param(h,sh);
-    Debug_GetLines(h,v,&sh,&sv,
-                surface->w,surface->h, argv[1],type_debug);
-    }
-    }
-    return 0;
+	//PREPARATION OF CUTTER
+	struct Line* horizontals = calloc(1,sizeof(struct Line));
+	struct Line* verticals = calloc(1,sizeof(struct Line));
+	int size_h=1;
+	int size_v=1;
+	GetLines
+		    (mat, diag_size,max,&horizontals, &verticals,
+		     &size_h, &size_v,to_analyze);
+	SDL_Surface* to_cut = load_image(argv[1]);
+	Cut(&horizontals,&verticals,&size_h,&size_v,to_cut);
+	to_cut = load_image("mat_0_0");
+	CutFinale(to_cut);
+	Free_Mat(mat);
+	Free_Lines(horizontals,verticals);
+	SDL_FreeSurface(to_cut);
+	SDL_FreeSurface(to_analyze);
+	SDL_Quit();
+
+	char path[1024];
+	getcwd(path,sizeof(path));
+	char file = "/result";
+	return path+file;
 }
 
 void print_param(struct Line* l, int s)
