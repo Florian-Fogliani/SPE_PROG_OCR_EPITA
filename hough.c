@@ -5,7 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-
+/*
 SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
 {
     int newW = (int)(to_zoom->w * zoomFactor);
@@ -15,7 +15,7 @@ SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
     SDL_Surface* result = SDL_CreateRGBSurface(0,to_zoom->w,to_zoom->h,32,0,0,0,0); 
     SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
     return result;
-}
+}*/
 
 void invertColors(SDL_Surface* surface) {
     if (surface == NULL) {
