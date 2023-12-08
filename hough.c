@@ -5,6 +5,18 @@
 #include <math.h>
 #include <stdlib.h>
 
+
+SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
+{
+    int newW = (int)(to_zoom->w * zoomFactor);
+    int newH = (int)(to_zoom->h * zoomFactor);
+    SDL_Rect srcRect = {0,0,newW,newH};
+    SDL_Rect dstRect = {0,0,newW,newH};
+    SDL_Surface* result = SDL_CreateRGBSurface(0,to_zoom->w,to_zoom->h,32,0,0,0,0); 
+    SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
+    return result;
+}
+
 void invertColors(SDL_Surface* surface) {
     if (surface == NULL) {
         fprintf(stderr, "Surface is NULL\n");
@@ -351,7 +363,8 @@ void SaveCas
 	char name[20];
 	sprintf(name,"mat_%d_%d.png",nb_l,nb_col);
 	SDL_BlitSurface(img,&rect,capture,NULL);
-	invertColors(capture);
+	//invertColors(capture);
+    capture = zoom(capture,0.8);
 	IMG_SavePNG(capture,name);
 	SDL_FreeSurface(capture);
 }

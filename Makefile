@@ -4,20 +4,15 @@ CC=gcc
 CFLAGS = -Wall -Wextra $(shell pkg-config --cflags sdl2 SDL2_image) -lm
 LDLIBS = $(shell pkg-config --libs sdl2 SDL2_image) -lm
 
-SRC2=grayscale.c
-OBJ2=${SRC2:.c=.o}
-EXE2=${SRC2:.c=}
-
 SRC3= hough.c cuttertest.c
 OBJ3=${SRC3:.c=.o}
 EXE3=${SRC3:.c=}
 
 
-all:grayscale cuttertest
+all:cuttertest
 
 -include  ${DEP}
 
-grayscale: ${OBJ2}
 cuttertest: ${OBJ3}
 
 
