@@ -16,7 +16,7 @@ SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
     SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
     return result;
 }*/
-SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
+/*SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
     // Définissez la taille du rect en fonction du facteur de zoom
     int zoomedWidth = imgSurface->w / zoomFactor;
     int zoomedHeight = imgSurface->h / zoomFactor;
@@ -44,7 +44,7 @@ SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int c
     SDL_FreeSurface(zoomedSurface);
 
     return finalSurface;
-}
+}*/
 
 void invertColors(SDL_Surface* surface) {
     if (surface == NULL) {
@@ -56,7 +56,8 @@ void invertColors(SDL_Surface* surface) {
 
     for (int y = 0; y < surface->h; y++) {
         for (int x = 0; x < surface->w; x++) {
-            Uint32 pixel = *((Uint32*)surface->pixels + y * surface->pitch / 4 + x);
+            Uint32 pixel = 
+                *((Uint32*)surface->pixels + y * surface->pitch / 4 + x);
             Uint8 r, g, b, a;
 
             SDL_GetRGBA(pixel, surface->format, &r, &g, &b, &a);
@@ -74,46 +75,14 @@ void invertColors(SDL_Surface* surface) {
             	b = 255;
 	    }
 
-            *((Uint32*)surface->pixels + y * surface->pitch / 4 + x) = SDL_MapRGBA(surface->format, r, g, b, a);
+            *((Uint32*)surface->pixels + y * surface->pitch / 4 + x) 
+                = SDL_MapRGBA(surface->format, r, g, b, a);
         }
     }
 
     SDL_UnlockSurface(surface);
 }
 
-int Get_Rot(int* mat, int max,const int diag_size)
-{
-	int angle = 0;
-	int nb_line = 0;
-	int seuil = 0.2;
-	for (int y=0;y<2*diag_size;y++)
-	{
-		for (int x=0;x<180;x++)
-		{
-			/*if (mat[y][x]>max)
-			{
-				if (x != 90*seuil && x !=0)
-				{
-					if (angle==0)
-					{
-						angle=x;
-						nb_line++;
-					}
-					else if (angle>=x+x*seuil && angle <=x-x*seuil)
-					{
-						nb_line++;
-					}
-					else
-					{
-						angle = x;
-						nb_line = 0;
-					}
-				}
-			}*/
-		}
-	}
-	return angle;
-}
 
 int* Init_Mat(const int R)
 {
@@ -274,9 +243,10 @@ void GetLines
 			{
 				int real_p = p-diag_size;
 				int real_t = t-90;
-				if (abs(real_t) > thresold_horizon && abs(real_t)<130 && real_p+img->h > 10) //Horizontals Lines
+				if (abs(real_t) > thresold_horizon 
+                        && abs(real_t)<130 
+                        && real_p+img->h > 10) //Horizontals Lines
 				{
-                    //printf("%i \n",real_t);
 						struct Line to_save = {real_p, real_t};
 						Insert_Sort(horizontals, size_horizontals, &to_save);
 				}
@@ -352,35 +322,6 @@ void SaveCas
 	int y1 = bord_up.y;
 	int x2 = bord_down.x;
 	int y2 = bord_down.y;
-    /*Uint32* p = img->pixels;
-    int choice=1;
-    while (x2-x1 != 28)
-    {
-        if (choice)
-        {
-            x1++;
-            choice = 0;
-        }
-        else
-        {
-            x2--;
-            choice=1;
-        }
-    }
-    choice=1;
-    while(y2-y1 != 28)
-    {
-        if (choice)
-        {
-            y1++;
-            choice=0;
-        }
-        else
-        {
-            y2--;
-            choice=1;
-        }
-    }*/
 	int largeur = x2-x1;
 	int hauteur = y2-y1;
 	SDL_Rect rect;
@@ -393,7 +334,7 @@ void SaveCas
 	sprintf(name,"mat_%d_%d.png",nb_l,nb_col);
 	SDL_BlitSurface(img,&rect,capture,NULL);
 	//invertColors(capture);
-    capture = zoom(capture,0.9,capture->w/2,0);
+    //capture = zoom(capture,0.9,capture->w/2,0);
 	IMG_SavePNG(capture,name);
 	SDL_FreeSurface(capture);
 }
@@ -432,8 +373,8 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     {
 	    y2 = hor[9].rho;
     }
-    if (y2>img->h) y2=img->h;
-    if (x2>img->w) x2=img->w;
+    if (y2>img->h) y2=img->h-1;
+    if (x2>img->w) x2=img->w-1;
     struct Point up = {x1,y1+22};
     struct Point down = {x2,y2};
     SaveGrid(img,0,0,up,down);
@@ -476,7 +417,7 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
         int n = 0;
         int diff = tab[b].rho - tab[a].rho;
 
-        while (diff <= 20)
+        while (diff <= 50)
         {
             b++;
             diff = tab[b].rho - tab[a].rho;
