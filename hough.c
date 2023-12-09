@@ -16,7 +16,7 @@ SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
     SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
     return result;
 }*/
-SDL_Surface* zoomImage(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
+SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
     // Définissez la taille du rect en fonction du facteur de zoom
     int zoomedWidth = imgSurface->w / zoomFactor;
     int zoomedHeight = imgSurface->h / zoomFactor;
@@ -393,7 +393,7 @@ void SaveCas
 	sprintf(name,"mat_%d_%d.png",nb_l,nb_col);
 	SDL_BlitSurface(img,&rect,capture,NULL);
 	//invertColors(capture);
-    capture = zoom(capture,0.8,capture->w/2,0);
+    capture = zoom(capture,0.9,capture->w/2,0);
 	IMG_SavePNG(capture,name);
 	SDL_FreeSurface(capture);
 }
