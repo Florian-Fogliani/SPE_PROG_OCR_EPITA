@@ -14,6 +14,18 @@ SDL_Surface* load_image(const char* path)
     return res;
 }
 
+void print_param(struct Line* l, int s)                                         
+{                                                                               
+    int i=0;                                                                    
+    while (i<s)                                                                 
+    {                                                                           
+        printf("Rho %i, Theta %i \n", l[i].rho, l[i].theta);                    
+        i++;                                                                    
+    }                                                                           
+}   
+
+
+
 int main(int argc, char** argv)
 {
 	if (strcmp(argv[1],"clean")==0)
@@ -39,7 +51,8 @@ int main(int argc, char** argv)
 				pid_t pid=fork();
 				if(pid==0)
 				{
-					char nb[]={'/','m','a','t','_',i+48,'_',y+48,'\0'};
+					char nb[]={'/','m','a','t','_',i+48,'_',y+48
+                        ,'.','p','n','g','\0'};
 					char* arg[] = {"rm",strcat(path,nb),NULL};
 					execvp("rm",arg);
 					return 0;
@@ -62,7 +75,7 @@ int main(int argc, char** argv)
 		errx(EXIT_FAILURE, "%s",SDL_GetError());
 	}
 
-    if (argc == 2)
+    if (argc == 3)
     {
 	    int diag_size = (int)Calculate_Diagonal(surface);
 	    int* mat = Init_Mat((const int)diag_size);
@@ -74,7 +87,7 @@ int main(int argc, char** argv)
 	    GetLines
 		    (mat, diag_size,max,&horizontals, &verticals,
 		     &size_h, &size_v,surface);
-	    SDL_Surface* to_cut = load_image("testIr1.png");
+	    SDL_Surface* to_cut = load_image(argv[2]);
 	    Cut(&horizontals,&verticals,&size_h,&size_v,to_cut);
 	    SDL_Surface* loaded = load_image("mat_0_0");
 	    to_cut = SDL_CreateRGBSurface(0,252,252,
@@ -95,18 +108,18 @@ int main(int argc, char** argv)
     const int diag_size = (int)Calculate_Diagonal(surface);
     int* mat = Init_Mat(diag_size);
     int max = Fill_Mat(surface,mat,diag_size);
-    if (strcmp(argv[2],"debug")==0)
+    if (strcmp(argv[3],"debug")==0)
     {
 	    Debug(mat, diag_size, argv[1], surface->w, surface->h, max);
     }
     else
     {
     	int type_debug = 0;
-    	if (strcmp(argv[2],"verticals")==0)
+    	if (strcmp(argv[3],"verticals")==0)
     	{
 		    type_debug = 1;
     	}
-	else if (strcmp(argv[2],"horizontals")==0)
+	else if (strcmp(argv[3],"horizontals")==0)
 	{
 		type_debug=0;
 	}
@@ -141,12 +154,3 @@ int main(int argc, char** argv)
     return 0;
 }
 
-void print_param(struct Line* l, int s)
-{
-    int i=0;
-    while (i<s)
-    {
-        printf("Rho %i, Theta %i \n", l[i].rho, l[i].theta);
-        i++;
-    }
-}

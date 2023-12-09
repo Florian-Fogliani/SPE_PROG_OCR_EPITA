@@ -5,46 +5,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-/*
-SDL_Surface* zoom(SDL_Surface* to_zoom,double zoomFactor)
-{
-    int newW = (int)(to_zoom->w * zoomFactor);
-    int newH = (int)(to_zoom->h * zoomFactor);
-    SDL_Rect srcRect = {to_zoom->w*(1-zoomFactor),0,newW,newH};
-    SDL_Rect dstRect = {to_zoom->w*(1-zoomFactor),0,newW,newH};
-    SDL_Surface* result = SDL_CreateRGBSurface(0,to_zoom->w,to_zoom->h,32,0,0,0,0); 
-    SDL_BlitScaled(to_zoom,&srcRect,result,&dstRect);
-    return result;
-}*/
-/*SDL_Surface* zoom(SDL_Surface* imgSurface, double zoomFactor, int centerX, int centerY) {
-    // Définissez la taille du rect en fonction du facteur de zoom
-    int zoomedWidth = imgSurface->w / zoomFactor;
-    int zoomedHeight = imgSurface->h / zoomFactor;
-
-    // Créez une nouvelle SDL_Surface pour contenir la portion zoomée de l'image
-    SDL_Surface* zoomedSurface = SDL_CreateRGBSurface(0, zoomedWidth, zoomedHeight, 32, 0, 0, 0, 0);
-
-    // Préparez le rectangle de source pour SDL_BlitSurface
-    SDL_Rect sourceRect; 
-    sourceRect.x = centerX - zoomedWidth / 2;
-    sourceRect.y = centerY - zoomedHeight / 2;
-    sourceRect.w = zoomedWidth;
-    sourceRect.h = zoomedHeight;
-
-    // Copier la portion de l'image
-    SDL_BlitSurface(imgSurface, &sourceRect, zoomedSurface, NULL);
-
-    // Créez une nouvelle SDL_Surface pour contenir l'image à l'échelle finale de 28x28
-    SDL_Surface* finalSurface = SDL_CreateRGBSurface(0, 28, 28, 32, 0, 0, 0, 0);
-
-    // Appliquer la mise à l'échelle à l'image
-    SDL_BlitScaled(zoomedSurface, NULL, finalSurface, NULL);
-
-    // Libérer la surface zoomée
-    SDL_FreeSurface(zoomedSurface);
-
-    return finalSurface;
-}*/
 
 void invertColors(SDL_Surface* surface) {
     if (surface == NULL) {
@@ -342,8 +302,8 @@ void SaveCas
 void Cut(struct Line** horizontals, struct Line ** verticals, 
         int* size_h, int* size_v,SDL_Surface* img)
 {
-    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),*size_h,12);
-    struct Line* ver = (struct Line*)get_10_lines(*(verticals),*size_v,12);
+    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),*size_h,10);
+    struct Line* ver = (struct Line*)get_10_lines(*(verticals),*size_v,10);
 
     if (ver == NULL )
     {
@@ -389,11 +349,6 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
 }
 void CutFinale(SDL_Surface* img)
 {
-    //SDL_Surface* imgf = SDL_CreateRGBSurface(0,252,252,32,img->format->Rmask,
-            //img->format->Gmask,img->format->Bmask
-            //,img->format->Amask);
-    //SDL_Rect rect = {0,0,252,252};
-    //SDL_BlitSurface(img,NULL,imgf,&rect);
     SDL_Surface* imgf=img;
     int step_w = imgf->w/9;
     int step_h = imgf->h/9;
@@ -411,16 +366,12 @@ void CutFinale(SDL_Surface* img)
         a++;
         b=0;
     }
-    printf("Largeur : %i \n",imgf->w);
-    printf("Step : %i \n",step_w);
-
 }
 struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
         int i)
 {
         struct Line* ten = calloc(1,sizeof(struct Line));
         
-        printf("====NEW Call=====\n Ref : %i \n I = %i \n",ref,i);
         int a = i;
         int b = a + 1;
         int n = 0;
@@ -434,7 +385,6 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
 
         while (b < len && ref - diff >= -threshold)
         {
-            printf("a = [%i] %i b = [%i] %i diff = %i\n",a,tab[a].rho,b,tab[b].rho,diff);
             if (ref - diff <= threshold)
             {
                 n++;
@@ -451,9 +401,8 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
             diff = tab[b].rho - tab[a].rho;
         }
 
-        if (n == 9 && ref - (tab[len - 1].rho - tab[a].rho) <= threshold)
+        if (n == 9 && ref - tab[len - 1].rho - tab[a].rho <= threshold)
         {
-            printf("YES SIR \n");
             ten = realloc(ten, 10 * sizeof(struct Line));
             if (a<len)
             {
@@ -483,7 +432,6 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold)
         while (j <= len)
         {
             int ref = tab[j].rho - tab[i].rho;
-            printf("i : %i j : %i \n",i,j);
             ten = get_10_refs(tab, len, threshold, ref, i);
             if (ten != NULL)
                 return ten;
@@ -491,6 +439,5 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold)
         }
         i++;
     }
-    //write(2, "can't find 10 lines\n", 20);
     return NULL;
 }
