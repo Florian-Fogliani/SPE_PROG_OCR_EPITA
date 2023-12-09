@@ -375,7 +375,7 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     }
     if (y2>img->h) y2=img->h-1;
     if (x2>img->w) x2=img->w-1;
-    struct Point up = {x1,y1+22};
+    struct Point up = {x1,y1};
     struct Point down = {x2,y2};
     SaveGrid(img,0,0,up,down);
 }

@@ -74,9 +74,9 @@ int main(int argc, char** argv)
 	    GetLines
 		    (mat, diag_size,max,&horizontals, &verticals,
 		     &size_h, &size_v,surface);
-	    SDL_Surface* to_cut = load_image("testIr4.png");
+	    SDL_Surface* to_cut = load_image("testIr1.png");
 	    Cut(&horizontals,&verticals,&size_h,&size_v,to_cut);
-	    /*SDL_Surface* loaded = load_image("mat_0_0");
+	    SDL_Surface* loaded = load_image("mat_0_0");
 	    to_cut = SDL_CreateRGBSurface(0,252,252,
 			    32,
 			    loaded->format->Rmask,
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
 			    loaded->format->Amask);
 	    SDL_Rect r = {0,0,253,253};
 	    SDL_BlitScaled(loaded,NULL,to_cut,&r);
-	    CutFinale(to_cut);*/
+	    CutFinale(to_cut);
 	    Free_Mat(mat);
 	    Free_Lines(horizontals,verticals);
                 
