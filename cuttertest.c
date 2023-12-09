@@ -118,7 +118,13 @@ int main(int argc, char** argv)
     	GetLines
             (mat,diag_size,max, &horizontals, &verticals,
              &size_h,&size_v,surface);
+        printf("============BEFORE SELECT HORI============");
+        print_param(horizontals,size_h);
+        printf("============AFTER SELECT VERTI============");
+        print_param(verticals,size_v);
+        printf("=======GET HORI======\n");
 	struct Line* h = get_10_lines(horizontals,size_h,10);
+    printf("========GET VERTI======\n");
 	struct Line* v = get_10_lines(verticals,size_v,10);
 	int sh = 10;
 	int sv = 10;

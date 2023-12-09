@@ -342,8 +342,8 @@ void SaveCas
 void Cut(struct Line** horizontals, struct Line ** verticals, 
         int* size_h, int* size_v,SDL_Surface* img)
 {
-    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),*size_h,10);
-    struct Line* ver = (struct Line*)get_10_lines(*(verticals),*size_v,10);
+    struct Line* hor = (struct Line*)get_10_lines(*(horizontals),*size_h,12);
+    struct Line* ver = (struct Line*)get_10_lines(*(verticals),*size_v,12);
 
     if (ver == NULL )
     {
@@ -373,8 +373,16 @@ void Cut(struct Line** horizontals, struct Line ** verticals,
     {
 	    y2 = hor[9].rho;
     }
-    if (y2>img->h) y2=img->h-1;
-    if (x2>img->w) x2=img->w-1;
+    if (y2>img->h)
+    {
+        printf("===Y Superior== \n");
+        y2=img->h-1;
+    }
+    if (x2>img->w)
+    {
+       printf("====X Superior === \n"); 
+        x2=img->w-1;
+    }
     struct Point up = {x1,y1};
     struct Point down = {x2,y2};
     SaveGrid(img,0,0,up,down);
@@ -412,6 +420,7 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
 {
         struct Line* ten = calloc(1,sizeof(struct Line));
         
+        printf("====NEW Call=====\n Ref : %i \n I = %i \n",ref,i);
         int a = i;
         int b = a + 1;
         int n = 0;
@@ -425,6 +434,7 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
 
         while (b < len && ref - diff >= -threshold)
         {
+            printf("a = [%i] %i b = [%i] %i diff = %i\n",a,tab[a].rho,b,tab[b].rho,diff);
             if (ref - diff <= threshold)
             {
                 n++;
@@ -432,6 +442,7 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
                 ten[n - 1] = tab[a];
                 a = b;
                 b = a + 1;
+                ref=diff;
                 if (n == 10)
                     return ten;
             }
@@ -440,10 +451,18 @@ struct Line* get_10_refs(struct Line* tab, int len, int threshold, int ref,
             diff = tab[b].rho - tab[a].rho;
         }
 
-        if (n == 9 && ref - tab[len - 1].rho - tab[a].rho <= threshold)
+        if (n == 9 && ref - (tab[len - 1].rho - tab[a].rho) <= threshold)
         {
+            printf("YES SIR \n");
             ten = realloc(ten, 10 * sizeof(struct Line));
-            ten[n] = tab[len - 1];
+            if (a<len)
+            {
+                ten[n] = tab[a];
+            }
+            else
+            {
+                ten[n]=tab[len-1];
+            }
             return ten;
         }
 
@@ -464,6 +483,7 @@ struct Line* get_10_lines(struct Line* tab, int len, int threshold)
         while (j <= len)
         {
             int ref = tab[j].rho - tab[i].rho;
+            printf("i : %i j : %i \n",i,j);
             ten = get_10_refs(tab, len, threshold, ref, i);
             if (ten != NULL)
                 return ten;
